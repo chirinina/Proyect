@@ -1,0 +1,1047 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Generador de Documento ESAM</title>
+    <style>
+      /* RESETEO BÁSICO */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f0f0f0;
+      }
+      h1,
+      h2,
+      h3,
+      h4,
+      p {
+        margin: 0.5em 0;
+      }
+      /* CONTENEDOR DEL LOGIN */
+      .login-container {
+        width: 90%;
+        max-width: 400px;
+        margin: 80px auto;
+        background: #fff;
+        padding: 30px;
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+        border-radius: 8px;
+        text-align: center;
+      }
+      
+      /* CONTENEDOR DEL MAIN (Generador y Documentos) */
+      .main-container {
+        display: none;
+      }
+      /* FORMULARIO MODERNO */
+      .form-container {
+        width: 90%;
+        max-width: 600px;
+        margin: 40px auto;
+        background: #fff;
+        padding: 30px;
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+        border-radius: 8px;
+        text-align: left;
+      }
+      .form-container h1 {
+        text-align: center;
+        color: #0066cc;
+        margin-bottom: 20px;
+      }
+      .form-group {
+        margin-bottom: 15px;
+      }
+      .form-group label {
+        font-weight: bold;
+        display: block;
+        margin-bottom: 5px;
+      }
+      .form-group input,
+      .form-group textarea {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+      }
+      .form-group textarea {
+        resize: vertical;
+      }
+      .btn {
+        display: inline-block;
+        margin: 10px 5px 0 0;
+        padding: 10px 20px;
+        background: #0066cc;
+        color: #fff;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 16px;
+      }
+      .btn:hover {
+        background: #004999;
+      }
+      .hidden {
+        display: none;
+      }
+      /* Mensaje de proceso */
+      #procesoMensaje {
+        text-align: center;
+        font-size: 18px;
+        color: #555;
+        margin-top: 20px;
+      }
+      /* BOTONES DE ACCIÓN (Ver, Descargar, Compartir, Historial) */
+      .action-container {
+        width: 90%;
+        max-width: 600px;
+        margin: 20px auto;
+        text-align: center;
+      }
+      /* CONTENEDOR DEL HISTORIAL */
+      .history-container {
+        width: 90%;
+        max-width: 600px;
+        margin: 20px auto;
+        background: #fff;
+        padding: 20px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        border-radius: 8px;
+        display: none;
+      }
+      .history-container h2 {
+        text-align: center;
+        margin-bottom: 15px;
+      }
+      .history-item {
+        border-bottom: 1px solid #ccc;
+        padding: 10px 0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .history-item:last-child {
+        border-bottom: none;
+      }
+      /* DOCUMENTO GENERADO (Páginas) */
+      #documento {
+        display: none;
+      }
+      .page {
+        position: relative;
+        width: 210mm; /* A4 */
+        min-height: 297mm; /* A4 */
+        margin: 20px auto;
+        background: #fff;
+        box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+        page-break-after: always;
+        padding: 0;
+      }
+      /* Página 1 con barra izquierda */
+      .page1 .left-column {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 48mm;
+        height: 100%;
+        background: #071e3b;
+        padding: 20px;
+        text-align: center;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+      .page1 .left-column img {
+        max-width: 50%;
+        height: auto;
+        margin-bottom: 35px;
+      }
+      .page1 .left-column p {
+        color: #fff;
+        font-size: 0.7em;
+        margin-top: 750px;
+        line-height: 1.3em;
+        text-align: center;  /* Centrado del texto */
+        padding-bottom: 10px;  /* Espacio entre el texto y la línea */
+        position: relative; /* Necesario para colocar el pseudo-elemento */
+      }
+
+      .page1 .left-column p::after {
+        content: '';
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        height: 3px;  /* Altura de la línea */
+        background: linear-gradient(to right, #021d92, #ff0800, #f10000); /* Degradado */
+      }
+
+
+      .page1 .right-column {
+        margin-left: 48mm;
+        padding: 30px 20px;
+      }
+      /* Páginas 2 y 3 (ancho completo) */
+      .full-content {
+        width: 100%;
+        padding: 30px 20px;
+      }
+      .page1-content p,
+      .page2-content p,
+      .page3-content p {
+        text-align: justify;
+        margin-bottom: 10px;
+      }
+      .page2-content table,
+      .page3-content table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 10px 0;
+      }
+      .page3-content table,
+      .page3-content th,
+      .page3-content td {
+        border: 1px solid #000;
+      }
+      .page3-content th,
+      .page3-content td {
+        padding: 5px;
+        text-align: left;
+        vertical-align: top;
+      }
+      .data-field {
+        font-weight: bold;
+        color: #000;
+      }
+      /* IMPRESIÓN: Se ocultan formulario, botones y historial */
+      @media print {
+        .form-container,
+        .action-container,
+        .history-container {
+          display: none !important;
+        }
+        body {
+          background: #fff;
+        }
+        * {
+          -webkit-print-color-adjust: exact;
+          print-color-adjust: exact;
+        }
+      }
+      .history-actions {
+        display: flex;
+        gap: 10px;
+        margin-top: 10px;
+      }
+    </style>
+    <style>
+      
+/* Contenedor principal */
+.login-container {
+    position: relative;
+    background: rgba(255, 255, 255, 0.95);
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+    width: 800px;
+    display: flex;
+    overflow: hidden;
+    animation: slideIn 1s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Animación de entrada */
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-50px) rotateX(-30deg);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) rotateX(0);
+    }
+}
+
+/* Sección del formulario */
+.login-form {
+    flex: 1;
+    padding-right: 2px;
+}
+
+/* Logo */
+.logo-section {
+    flex: 1;
+    background: #4f46e5;
+    margin: -40px;
+    margin-left: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transform: scale(1);
+    animation: logoScale 1.5s ease-in-out;
+}
+
+.logo-section img {
+    width: 200px;
+    filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1));
+}
+
+@keyframes logoScale {
+    0% { transform: scale(0); }
+    70% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
+
+/* Campos de entrada */
+input {
+    width: 100%;
+    padding: 15px;
+    margin: 15px 0;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 16px;
+    transition: all 0.3s ease;
+}
+
+input:focus {
+    outline: none;
+    border-color: #4f46e5;
+    box-shadow: 0 4px 6px rgba(79, 70, 229, 0.1);
+}
+
+/* Checkbox recordarme */
+.remember-me {
+    display: flex;
+    align-items: center;
+    margin: 20px 0;
+    cursor: pointer;
+}
+
+.remember-me input {
+    opacity: 0;
+    position: absolute;
+}
+
+.checkmark {
+    width: 20px;
+    height: 20px;
+    border: 2px solid #ccc;
+    border-radius: 5px;
+    margin-right: 10px;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.checkmark::after {
+    content: "";
+    position: absolute;
+    left: 5px;
+    top: 1px;
+    width: 6px;
+    height: 12px;
+    border: solid white;
+    border-width: 0 3px 3px 0;
+    transform: rotate(45deg);
+    opacity: 0;
+}
+
+.remember-me input:checked ~ .checkmark {
+    background: #4f46e5;
+    border-color: #4f46e5;
+}
+
+.remember-me input:checked ~ .checkmark::after {
+    opacity: 1;
+    animation: checkSlide 0.3s ease;
+}
+
+@keyframes checkSlide {
+    from { transform: translateX(-5px) rotate(45deg); }
+    to { transform: translateX(0) rotate(45deg); }
+}
+
+/* Botón */
+.btn {
+    width: 100%;
+    padding: 15px;
+    background: #4f46e5;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.btn:hover {
+    background: #4338ca;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(79, 70, 229, 0.3);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .login-container {
+        flex-direction: column;
+        width: 90%;
+    }
+    
+    .logo-section {
+        margin: 20px -40px -40px -40px;
+        padding: 40px;
+    }
+}
+    </style>
+  </head>
+  <body>
+    <div class="login-container" id="loginContainer">
+      <div class="login-form">
+          <h1>Iniciar Sesión</h1>
+          <input type="text" id="username" placeholder="Usuario" />
+          <input type="password" id="password" placeholder="Contraseña" />
+          
+          <label class="remember-me">
+              <input type="checkbox" checked="checked">
+              <span class="checkmark"></span>
+              Recordar sesión
+          </label>
+          
+          <button class="btn" id="btnLogin">Ingresar</button>
+      </div>
+      
+      <div class="logo-section">
+          <!-- Agrega tu imagen del logo aquí -->
+          <img src="https://i.ibb.co/pvbBF6fx/Chiri-picaai.png" alt="Logo">
+      </div>
+  </div>
+
+    <!-- MAIN: Generador y Documentos (Se muestra luego del login) -->
+    <div class="main-container" id="mainContainer">
+      <!-- FORMULARIO MODERNO -->
+      <div class="form-container" id="formulario">
+        <h1>Generador de Documento ESAM</h1>
+        <p>
+          Completa los campos y presiona <strong>PROCESAR</strong>. Luego se
+          mostrará el documento para visualizar o descargar.
+        </p>
+
+        <!-- Página 1: Datos de la primera hoja -->
+        <div class="form-group">
+          <label for="inputMscName">MSC. XXX (Nombre del Docente)</label>
+          <input
+            type="text"
+            id="inputMscName"
+            placeholder="Ej. MSC. Juan Pérez"
+          />
+        </div>
+        <div class="form-group">
+          <label for="inputDiplomado">DIPLOMADO EN XXX</label>
+          <input
+            type="text"
+            id="inputDiplomado"
+            placeholder="Ej. DIPLOMADO EN GESTIÓN"
+          />
+        </div>
+
+        <!-- Página 2: Datos de la segunda hoja -->
+        <div class="form-group">
+          <label for="inputModulo">MÓDULO (Título)</label>
+          <input
+            type="text"
+            id="inputModulo"
+            placeholder="Ej. MÓDULO DE PROYECTOS"
+          />
+        </div>
+        <div class="form-group">
+          <label for="inputNumeroModulo"
+            >Número de Módulo (I, II, III...)</label
+          >
+          <input type="text" id="inputNumeroModulo" placeholder="Ej. I" />
+        </div>
+        <div class="form-group">
+          <label for="inputContenido">CONTENIDO MÍNIMO SUGERIDO</label>
+          <textarea
+            id="inputContenido"
+            placeholder="Coloca aquí el contenido mínimo sugerido..."
+          ></textarea>
+        </div>
+        <div class="form-group">
+          <label for="inputFechas">FECHAS DE CLASES VIRTUALES</label>
+          <input
+            type="text"
+            id="inputFechas"
+            placeholder="Ej. Todos los sábados de 19:00 a 22:00"
+          />
+        </div>
+
+        <!-- Página 3: 10 Fechas de entrega -->
+        <div class="form-group">
+          <h2>Campos de la Tercera Hoja (10 Fechas de Entrega)</h2>
+          <div id="fechasContainer"></div>
+        </div>
+
+        <!-- Botón PROCESAR -->
+        <button class="btn" id="btnProcesar">PROCESAR</button>
+        <p id="procesoMensaje" class="hidden">GENERANDO DOCUMENTO... ⏳</p>
+      </div>
+
+      <!-- Botones de acción (Ver, Descargar, Compartir, Historial) -->
+      <div class="action-container hidden" id="botones-acciones">
+        <button class="btn" id="btnVer">VER DOCUMENTO</button>
+        <button class="btn" id="btnDescargar">DESCARGAR PDF</button>
+        <button class="btn" id="btnCompartir">COMPARTIR LINK</button>
+        <button class="btn" id="btnHistorial">VER HISTORIAL</button>
+      </div>
+
+      <!-- HISTORIAL DE DOCUMENTOS -->
+      <div class="history-container hidden" id="historyContainer">
+        <h2>Historial de Documentos Generados</h2>
+        <div id="historyList"></div>
+        <button class="btn" id="btnCerrarHistorial">Cerrar Historial</button>
+      </div>
+
+      <!-- DOCUMENTO GENERADO -->
+      <div id="documento">
+        <!-- Página 1: Con barra izquierda -->
+        <div class="page page1">
+          <div class="left-column">
+            <div style="position: relative; margin-bottom: 10px;">
+              <!-- Línea degradada más larga y centrada -->
+              <div style="position: absolute; top: -20px; left: 50%; transform: translateX(-50%); width: 128%; height: 20px; background: linear-gradient(to right, #020463, #eb1203);"></div>
+              
+              <!-- Imágenes -->
+              <img src="https://www.esam.edu.bo/img/logo_unsxx.png" alt="Logo SXX" />
+              <img src="https://www.esam.edu.bo/img/logo_esam_principal.png" alt="Logo SXX" />
+          </div>
+          
+            <p>
+              <strong style="display: block; text-align: center; position: relative;">SUCURSAL
+                <span style="display: block; width: 150px; height: 2px; margin: 10px auto 0; background: linear-gradient(to right, #020463, #eb1203);"></span>
+            </strong><br>
+            
+              Calle Sucre #976<br />
+              FENTE A ENTEL<br />
+              <strong>Escuela de Negocios</strong><br>
+              ESAM MONTEAGUDO<br>
+              <strong>www.esam.edu.bo</strong>
+            </p>
+          </div>
+          <div class="right-column page1-content">
+            <p id="fechaActual" style="text-align: right"></p>
+            <br />
+            <p><strong>Señor/a:</strong></p>
+            <p>
+              <span id="mscNameOutput" class="data-field">MSC. XXX</span><br />
+              Presente. -
+            </p>
+            <p><strong>Ref.: INVITACIÓN</strong></p>
+            <p>Estimado docente:</p>
+            <p>
+              Ante todo, reciba el más cordial de los saludos y deseos de éxito
+              en las labores que desempeña en bien del desarrollo de nuestro
+              país, conocedores de su amplia experiencia y conocimiento, nos
+              permitimos hacerle la presente invitación para que pueda formar
+              parte de nuestro selecto plantel docente del programa de
+              <span id="diplomadoOutput" class="data-field"
+                >DIPLOMADO EN XXX</span
+              >, de esa manera pueda compartir sus conocimientos y experiencias
+              con los participantes del mencionado programa, a través de la
+              Escuela de Negocios “ESAM”.
+            </p>
+            <p>
+              La ESAM está avalada bajo el Convenio con la Universidad Nacional
+              Siglo XX del Estado Plurinacional de Bolivia y cuenta con una
+              estructura administrativa a nivel nacional, por lo cual se
+              encuentra en la capacidad administrativa y académica para ofertar
+              y desarrollar variados programas de formación profesional
+              complementaria.
+            </p>
+            <p>
+              Seguros de contar con su valiosa participación, nos despedimos con
+              las consideraciones más distinguidas.
+            </p>
+            <br />
+            <div style="position: relative; display: flex; justify-content: space-between; align-items: center; margin-top: 80px;">
+
+              <!-- Firma Izquierda -->
+              <div style="text-align: center; width: 45%; margin-top: 30px;">
+                <p style="margin: 0; font-size: 14px; line-height: 1.8;">
+                  <strong>Ing. Juan Gustavo Quintana Cutipa</strong><br />
+                  <div style="color: #000000; text-align: center;">
+                    <strong>PROYECTISTA</strong><br />
+                    <strong>ESAM MONTEAGUDO</strong><br />
+                    72947133
+                  </div>
+                </p>
+              </div>
+            
+              <!-- Firma Derecha -->
+              <div style="text-align: center; width: 45%; margin-top: 30px;">
+                <p style="margin: 0; font-size: 14px; line-height: 1.8;">
+                  <strong>Ing. Andrea Lucía Aramayo Martínez</strong><br />
+                  <div style="color: #000000; text-align: center;">
+                    <strong>COORDINADORA ACADÉMICA</strong><br />
+                    <strong>ESAM MONTEAGUDO</strong><br />
+                    73360695
+                  </div>
+                </p>
+              </div>
+            
+              <!-- Sello flotante más grande -->
+              <img src="https://i.ibb.co/cKqkfv1D/cello.png" alt="cello" 
+                   style="position: absolute; top: -50px; left: 50%; transform: translateX(-50%); width: 160px; opacity: 0.7;">
+            </div>            
+          </div>
+        </div>
+
+        <!-- Página 2: Sin barra izquierda -->
+        <div class="page page2">
+          <div class="full-content page2-content">
+            <h3>
+              <span id="diplomadoOutput2" class="data-field"
+                >DIPLOMADO EN XXX</span
+              >
+              – ESAM MONTEAGUNDO
+            </h3>
+            <p>
+              <strong>MÓDULO:</strong>
+              <span id="moduloOutput" class="data-field">---</span>
+            </p>
+            <table>
+              <tr>
+                <td style="width: 10%; vertical-align: top">
+                  <strong
+                    ><span id="numeroModuloOutput" class="data-field"
+                      >I</span
+                    ></strong
+                  >
+                </td>
+                <td style="width: 90%">
+                  <strong>CONTENIDO MÍNIMO SUGERIDO:</strong><br />
+                  <span id="contenidoOutput" class="data-field"
+                    >(contenido)</span
+                  >
+                </td>
+              </tr>
+            </table>
+            <p>
+              <strong>FECHAS DE CLASES VIRTUALES:</strong>
+              <span id="fechasOutput" class="data-field">---</span>
+            </p>
+            <p>
+              (4 CLASES) CADA UNA DE 3 HORAS.<br />
+              El cronograma de clases se gestionará con la coordinadora
+              académica.
+            </p>
+            <p>
+              ES PRECISO QUE ANTES DEL INICIO DE MÓDULO CARGUE A PLATAFORMA EL
+              PLAN ACADÉMICO CURRICULAR MISMO QUE DEBE SER ENVIADO EN PDF
+              DEBIDAMENTE LLENADO Y FIRMADO A COORDINACIÓN ACADÉMICA
+            </p>
+            <p>
+              LINK DE DESCARGA.<br />
+              <a
+                href="https://drive.google.com/drive/folders/1PQ8TY-lfSIL87QQ_SWjmwGUiRFPj_NZ0?usp=sharing"
+                target="_blank"
+              >
+                https://drive.google.com/drive/folders/1PQ8TY-lfSIL87QQ_SWjmwGUiRFPj_NZ0?usp=sharing
+              </a>
+            </p>
+            <p><strong>OBJETIVO:</strong></p>
+            <p></p>
+            <p><strong>BIBLIOGRAFÍA:</strong></p>
+            <p>
+              Comité Ejecutivo de la Universidad Boliviana [CEUB]. (2011).
+              Reglamento General de Estudios de Postgrado de la Universidad
+              Boliviana. La Paz, Bolivia.<br />
+              Reglamento del Sistema Nacional de Estudios de Posgrado de la
+              Universidad Boliviana. (2015). Comité Ejecutivo de la Universidad
+              Boliviana. Secretaría Nacional de Posgrado y Educación Continua.
+              La Paz – Bolivia.
+            </p>
+          </div>
+        </div>
+
+        <!-- Página 3: Sin barra izquierda -->
+        <div class="page page3">
+          <div class="full-content page3-content">
+            <h3>ACTIVIDADES DE LAS SEMANAS DE AVANCE</h3>
+            <table>
+              <tr>
+                <th>ACTIVIDADES</th>
+                <th>DESCRIPCIÓN DE LA ACTIVIDAD</th>
+                <th>FECHA DE ENTREGA</th>
+              </tr>
+              <tr>
+                <td>PRÁCTICO I</td>
+                <td>20 puntos actividad práctica o cuestionario</td>
+                <td><span id="fechaEntrega0" class="data-field"></span></td>
+              </tr>
+              <tr>
+                <td>PRÁCTICO II</td>
+                <td>10 puntos foro</td>
+                <td><span id="fechaEntrega1" class="data-field"></span></td>
+              </tr>
+              <tr>
+                <td>ASISTENCIA, PARTICIPACIÓN Y ENCUESTA DE SATISFACCIÒN</td>
+                <td>10 PUNTOS</td>
+                <td><span id="fechaEntrega2" class="data-field"></span></td>
+              </tr>
+              <tr>
+                <td>CLASE O FORO PARA ACLARAR DUDAS</td>
+                <td>Último sábado del módulo (19 a 21:00 pm)</td>
+                <td><span id="fechaEntrega3" class="data-field"></span></td>
+              </tr>
+              <tr>
+                <td>TRABAJO FINAL DE MÓDULO</td>
+                <td>60 PUNTOS</td>
+                <td><span id="fechaEntrega4" class="data-field"></span></td>
+              </tr>
+              <tr>
+                <td>ENTREGA DE NOTAS</td>
+                <td>El docente debe entregar las calificaciones firmadas</td>
+                <td><span id="fechaEntrega5" class="data-field"></span></td>
+              </tr>
+              <tr>
+                <td>TRABAJO NIVELACIÓN / RECUPERATORIO</td>
+                <td>71 PUNTOS</td>
+                <td><span id="fechaEntrega6" class="data-field"></span></td>
+              </tr>
+              <tr>
+                <td>ENTREGA DE NOTAS DE RECUPERATORIO</td>
+                <td>El docente debe entregar las calificaciones</td>
+                <td><span id="fechaEntrega7" class="data-field"></span></td>
+              </tr>
+              <tr>
+                <td>RECUPERATORIO EMERGENTE</td>
+                <td>Cuestionario se califique de forma automática</td>
+                <td><span id="fechaEntrega8" class="data-field"></span></td>
+              </tr>
+              <tr>
+                <td>Otras Tareas/Actividades</td>
+                <td>(Personalizable)</td>
+                <td><span id="fechaEntrega9" class="data-field"></span></td>
+              </tr>
+            </table>
+            <p style="text-align: justify">
+              Las tareas deben tener un plazo mínimo de 7 a 9 días y para dar el
+              tiempo suficiente a cada participante de realizar la misma y poder
+              reforzar lo aprendido viendo los videos de las grabaciones, de
+              esta manera el área académica puede realizar el seguimiento
+              correspondiente a los participantes.
+            </p>
+            <p style="text-align: justify">
+              <strong>EN CUANTO A HONORARIOS</strong> se cancelará el monto por
+              el módulo completo 1.775 Bs.- (MONTO FACTURADO) NOTA: Este monto
+              va a variar dependiendo del aumento del alumnado si supera los 41
+              participantes.
+            </p>
+            <p style="text-align: justify">
+              DEBE TENER CUENTA HABILITADA EN BANCO BISA PARA EL ABONO DE
+              HONORARIOS
+            </p>
+            <p style="text-align: justify">
+              El tiempo de presentación de notas 5 días después de la conclusión
+              del proceso formativo...
+            </p>
+            <p style="text-align: justify">
+              <strong
+                >Recordarle que su Informe firmado para el cierre del módulo,
+                debe contemplar:</strong
+              ><br />
+              INFORME DE CONCLUSIÓN DEL DESARROLLO DEL MÓDULO PLAN ACADÉMICO
+              CURRICULAR<br />
+              ACTA DE NOTAS FINALES<br />
+              RESULTADOS DE LA EJECUCIÓN DEL MÓDULO.<br />
+              PLANILLA DE NOTAS INCLUIDO RECUPERATORIO, FIRMADO A PIE DE
+              PÁGINA...
+            </p>
+            <p style="text-align: justify">
+              <strong>En caso de que surja algún inconveniente...</strong>
+            </p>
+            <p style="text-align: justify">
+              Sin otro particular y deseándole éxito...
+            </p>
+            <p>
+              <strong>Ing. Andrea Lucía Aramayo Martínez</strong><br />
+              COORDINADORA ACADÉMICA<br />
+              ESAM MONTEAGUNDO<br />
+              Cel: 73360695
+            </p>
+            <p>Deberá enviar su Hoja de Vida documentada...</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Función para formatear la fecha actual en español
+      function getFormattedDate() {
+        const date = new Date();
+        const day = date.getDate();
+        const monthNames = [
+          "enero",
+          "febrero",
+          "marzo",
+          "abril",
+          "mayo",
+          "junio",
+          "julio",
+          "agosto",
+          "septiembre",
+          "octubre",
+          "noviembre",
+          "diciembre",
+        ];
+        const month = monthNames[date.getMonth()];
+        const year = date.getFullYear();
+        return `Sucre, ${day} de ${month} del ${year}`;
+      }
+
+      // Si no viene "view=doc", asigna la fecha actual
+      if (!window.location.search.includes("view=doc")) {
+        document.getElementById("fechaActual").textContent = getFormattedDate();
+      }
+
+      // Función para obtener parámetros de la URL
+      function getURLParams() {
+        const params = new URLSearchParams(window.location.search);
+        const data = {};
+        for (const [key, value] of params.entries()) {
+          data[key] = decodeURIComponent(value);
+        }
+        return data;
+      }
+
+      // Si la URL tiene ?view=doc, cargar en modo solo visualización
+      (function checkViewMode() {
+        const params = getURLParams();
+        if (params.view && params.view === "doc") {
+          document.getElementById("formulario").classList.add("hidden");
+          document.getElementById("botones-acciones").classList.add("hidden");
+          document.getElementById("documento").style.display = "block";
+          if (params.msc)
+            document.getElementById("mscNameOutput").textContent = params.msc;
+          if (params.dip) {
+            document.getElementById("diplomadoOutput").textContent = params.dip;
+            document.getElementById("diplomadoOutput2").textContent =
+              params.dip;
+          }
+          if (params.mod)
+            document.getElementById("moduloOutput").textContent = params.mod;
+          if (params.num)
+            document.getElementById("numeroModuloOutput").textContent =
+              params.num;
+          if (params.cont)
+            document.getElementById("contenidoOutput").textContent =
+              params.cont;
+          if (params.fchas)
+            document.getElementById("fechasOutput").textContent = params.fchas;
+          for (let i = 0; i < 10; i++) {
+            const key = "fecha" + i;
+            const el = document.getElementById("fechaEntrega" + i);
+            if (el && params[key]) el.textContent = params[key];
+          }
+          document.getElementById("fechaActual").textContent =
+            getFormattedDate();
+        }
+      })();
+
+      // Generar 10 campos para fechas de entrega en el formulario
+      const fechasContainer = document.getElementById("fechasContainer");
+      for (let i = 0; i < 10; i++) {
+        const label = document.createElement("label");
+        label.textContent = `FECHA DE ENTREGA ${i + 1}:`;
+        const input = document.createElement("input");
+        input.type = "text";
+        input.id = `inputFechaEntrega${i}`;
+        input.placeholder = "Ej. 01/01/2025";
+        fechasContainer.appendChild(label);
+        fechasContainer.appendChild(input);
+      }
+
+      // LOGIN
+      const btnLogin = document.getElementById("btnLogin");
+      btnLogin.addEventListener("click", () => {
+        const user = document.getElementById("username").value;
+        const pass = document.getElementById("password").value;
+        // Usuarios válidos: usuario1/pass1 y usuario2/pass2
+        if (
+          (user === "usuario1" && pass === "pass1") ||
+          (user === "admin" && pass === "admin123") ||
+          (user === "jquintanacutipa" && pass === "10381927Ch") ||
+          (user === "." && pass === ".") ||
+          (user === "usuario2" && pass === "pass2")
+        ) {
+          document.getElementById("loginContainer").style.display = "none";
+          document.getElementById("mainContainer").style.display = "block";
+        } else {
+          alert("Credenciales incorrectas. Intente nuevamente.");
+        }
+      });
+
+      // Referencias a botones y secciones del main
+      const btnProcesar = document.getElementById("btnProcesar");
+      const btnVer = document.getElementById("btnVer");
+      const btnDescargar = document.getElementById("btnDescargar");
+      const btnCompartir = document.getElementById("btnCompartir");
+      const btnHistorial = document.getElementById("btnHistorial");
+      const procesoMensaje = document.getElementById("procesoMensaje");
+      const formulario = document.getElementById("formulario");
+      const botonesAcciones = document.getElementById("botones-acciones");
+      const documento = document.getElementById("documento");
+      const historyContainer = document.getElementById("historyContainer");
+      const historyList = document.getElementById("historyList");
+      const btnCerrarHistorial = document.getElementById("btnCerrarHistorial");
+
+      // Referencias a campos del formulario
+      const inputMscName = document.getElementById("inputMscName");
+      const inputDiplomado = document.getElementById("inputDiplomado");
+      const inputModulo = document.getElementById("inputModulo");
+      const inputNumeroModulo = document.getElementById("inputNumeroModulo");
+      const inputContenido = document.getElementById("inputContenido");
+      const inputFechas = document.getElementById("inputFechas");
+
+      // Referencias a elementos donde se muestra la info en el documento
+      const mscNameOutput = document.getElementById("mscNameOutput");
+      const diplomadoOutput = document.getElementById("diplomadoOutput");
+      const diplomadoOutput2 = document.getElementById("diplomadoOutput2");
+      const moduloOutput = document.getElementById("moduloOutput");
+      const numeroModuloOutput = document.getElementById("numeroModuloOutput");
+      const contenidoOutput = document.getElementById("contenidoOutput");
+      const fechasOutput = document.getElementById("fechasOutput");
+
+      // Al hacer click en "PROCESAR" (5 segundos)
+      btnProcesar.addEventListener("click", () => {
+        if (
+          !inputMscName.value ||
+          !inputDiplomado.value ||
+          !inputModulo.value
+        ) {
+          alert("Por favor, llena los campos obligatorios.");
+          return;
+        }
+        procesoMensaje.classList.remove("hidden");
+        btnProcesar.disabled = true;
+
+        setTimeout(() => {
+          mscNameOutput.textContent = inputMscName.value || "MSC. XXX";
+          diplomadoOutput.textContent =
+            inputDiplomado.value || "DIPLOMADO EN XXX";
+          diplomadoOutput2.textContent =
+            inputDiplomado.value || "DIPLOMADO EN XXX";
+          moduloOutput.textContent = inputModulo.value || "MÓDULO EJEMPLO";
+          numeroModuloOutput.textContent = inputNumeroModulo.value || "I";
+          contenidoOutput.textContent =
+            inputContenido.value || "CONTENIDO MÍNIMO SUGERIDO";
+          fechasOutput.textContent =
+            inputFechas.value || "FECHAS DE CLASES VIRTUALES";
+
+          document.getElementById("fechaActual").textContent =
+            getFormattedDate();
+
+          let fechaParams = "";
+          for (let i = 0; i < 10; i++) {
+            const fechaInput = document.getElementById(`inputFechaEntrega${i}`);
+            const fechaOutput = document.getElementById(`fechaEntrega${i}`);
+            let valor = fechaInput.value || "";
+            if (fechaOutput) {
+              fechaOutput.textContent = valor;
+            }
+            fechaParams += `&fecha${i}=` + encodeURIComponent(valor);
+          }
+
+          const baseUrl = window.location.origin + window.location.pathname;
+          const urlCompartir = `${baseUrl}?view=doc&msc=${encodeURIComponent(
+            inputMscName.value
+          )}&dip=${encodeURIComponent(
+            inputDiplomado.value
+          )}&mod=${encodeURIComponent(
+            inputModulo.value
+          )}&num=${encodeURIComponent(
+            inputNumeroModulo.value
+          )}&cont=${encodeURIComponent(
+            inputContenido.value
+          )}&fchas=${encodeURIComponent(inputFechas.value)}${fechaParams}`;
+          btnCompartir.setAttribute("data-url", urlCompartir);
+
+          // Guardar en historial en localStorage
+          const docEntry = {
+            timestamp: new Date().toISOString(),
+            url: urlCompartir,
+          };
+          let history = JSON.parse(localStorage.getItem("docHistory")) || [];
+          history.push(docEntry);
+          localStorage.setItem("docHistory", JSON.stringify(history));
+
+          formulario.classList.add("hidden");
+          procesoMensaje.classList.add("hidden");
+          documento.style.display = "block";
+          botonesAcciones.classList.remove("hidden");
+        }, 5000);
+      });
+
+      // Botón Ver / Ocultar Documento
+      let visible = true;
+      btnVer.addEventListener("click", () => {
+        visible = !visible;
+        documento.style.display = visible ? "block" : "none";
+      });
+
+      // Botón Descargar (window.print para PDF)
+      btnDescargar.addEventListener("click", () => {
+        window.print();
+      });
+
+      // Botón Compartir Link: copia URL generada al portapapeles
+      btnCompartir.addEventListener("click", () => {
+        const url = btnCompartir.getAttribute("data-url");
+        navigator.clipboard
+          .writeText(url)
+          .then(() => {
+            alert("¡Enlace copiado al portapapeles!");
+          })
+          .catch((err) => {
+            alert("Error al copiar el enlace.");
+          });
+      });
+
+      // Botón Historial: muestra el historial de documentos generados
+      btnHistorial.addEventListener("click", () => {
+        const history = JSON.parse(localStorage.getItem("docHistory")) || [];
+        historyList.innerHTML = "";
+        if (history.length === 0) {
+          historyList.innerHTML = "<p>No hay documentos generados.</p>";
+        } else {
+          history.reverse().forEach((doc, index) => {
+            const item = document.createElement("div");
+            item.classList.add("history-item");
+            const date = new Date(doc.timestamp);
+            item.innerHTML = `<span>${date.toLocaleString()}</span>
+          <button class="btn" onclick="verDocumentoHist('${
+            doc.url
+          }')">VER</button>`;
+            historyList.appendChild(item);
+          });
+        }
+        historyContainer.classList.remove("hidden");
+      });
+
+      // Función para ver documento del historial
+      function verDocumentoHist(url) {
+        window.location.href = url;
+      }
+
+      // Botón para cerrar historial
+      btnCerrarHistorial.addEventListener("click", () => {
+        historyContainer.classList.add("hidden");
+      });
+    </script>
+  </body>
+</html>
