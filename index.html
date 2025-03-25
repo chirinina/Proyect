@@ -258,11 +258,53 @@
       <div class="login-container" id="loginContainer">
           <!-- Formulario -->
           <div class="login-form">
-              <h1>Iniciar Sesión</h1>
-              <input type="text" id="username" placeholder="Usuario" />
-              <input type="password" id="password" placeholder="Contraseña" />
-              <button class="btn" id="btnLogin">Ingresar</button>
-          </div>
+            <h1>Iniciar Sesión</h1>
+            <input type="text" id="username" placeholder="Usuario" />
+            <input type="password" id="password" placeholder="Contraseña" />
+            <button class="btn" id="btnLogin">Ingresar</button>
+        
+            <!-- Mensaje de error (si se desea, se puede mantener o eliminar) -->
+            <p id="error-message" style="color: red; display: none; margin-top: 10px;"></p>
+        </div>
+        
+        <script>
+            // LOGIN
+            const btnLogin = document.getElementById("btnLogin");
+            const errorMessage = document.getElementById("error-message");
+            const usernameField = document.getElementById("username");
+            const passwordField = document.getElementById("password");
+        
+            btnLogin.addEventListener("click", () => {
+                const user = usernameField.value;
+                const pass = passwordField.value;
+        
+                // Restablecer el color de los campos
+                usernameField.style.borderColor = "";
+                passwordField.style.borderColor = "";
+        
+                // Usuarios válidos
+                if (
+                    (user === "usuario1" && pass === "pass1") ||
+                    (user === "admin" && pass === "admin123") ||
+                    (user === "jquintanacutipa" && pass === "10381927Ch") ||
+                    (user === "usuario1" && pass === "usuario1") ||
+                    (user === "usuario2" && pass === "pass2")
+                ) {
+                    document.getElementById("loginContainer").style.display = "none";
+                    document.getElementById("mainContainer").style.display = "block";
+                    errorMessage.style.display = "none"; // Oculta el mensaje de error si el login es correcto
+                } else {
+                    // Cambiar el borde de los campos a rojo si las credenciales son incorrectas
+                    usernameField.style.borderColor = "red";
+                    passwordField.style.borderColor = "red";
+                    
+                    // Mostrar el mensaje de error debajo del formulario (opcional)
+                    errorMessage.textContent = "Llena los campos😜";
+                    errorMessage.style.display = "block";
+                }
+            });
+        </script>
+        
           
           <!-- Sección de Imagen -->
           <div class="login-image">
@@ -1234,7 +1276,6 @@ label {
   }
 
       // LOGIN
-      const btnLogin = document.getElementById("btnLogin");
       btnLogin.addEventListener("click", () => {
         const user = document.getElementById("username").value;
         const pass = document.getElementById("password").value;
@@ -1248,9 +1289,7 @@ label {
         ) {
           document.getElementById("loginContainer").style.display = "none";
           document.getElementById("mainContainer").style.display = "block";
-        } else {
-          alert("Credenciales incorrectas. Intente nuevamente.");
-        }
+        } 
       });
 
       // Referencias a botones y secciones del main
