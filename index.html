@@ -2,7 +2,7 @@
 <html lang="es">
   <head>
     <meta charset="UTF-8" />
-    <title>Generador de Documento ESAM</title>
+    <title>Esam Sucre Sucursal</title>
     <style>
       /* RESETEO BÁSICO */
       * {
@@ -93,17 +93,6 @@
   <body>
 
 
-
-
-
-
-
-
-
-
-
-
-    
     <style>
       /* Reset Moderno */
       *, *::before, *::after {
@@ -256,24 +245,43 @@
       </style>
       
       <div class="login-container" id="loginContainer">
-          <!-- Formulario -->
+          <!-- Formulario de login -->
           <div class="login-form">
             <h1>Iniciar Sesión</h1>
             <input type="text" id="username" placeholder="Usuario" />
             <input type="password" id="password" placeholder="Contraseña" />
+            <span onclick="togglePassword()">
+                <i class="fas fa-eye"></i> <!-- Icono de ojo de Font Awesome -->
+            </span>
             <button class="btn" id="btnLogin">Ingresar</button>
-        
             <!-- Mensaje de error (si se desea, se puede mantener o eliminar) -->
             <p id="error-message" style="color: red; display: none; margin-top: 10px;"></p>
         </div>
-        
+          <!-- Formulario de login -->
+
+          <script>
+            function togglePassword() {
+                const passwordInput = document.getElementById("password");
+                const icon = document.querySelector("span i");
+                
+                if (passwordInput.type === "password") {
+                    passwordInput.type = "text";
+                    icon.classList.remove("fa-eye");
+                    icon.classList.add("fa-eye-slash"); // Cambia el icono a "ojo tachado"
+                } else {
+                    passwordInput.type = "password";
+                    icon.classList.remove("fa-eye-slash");
+                    icon.classList.add("fa-eye"); // Cambia al icono de "ojo"
+                }
+            }
+        </script>
         <script>
             // LOGIN
             const btnLogin = document.getElementById("btnLogin");
             const errorMessage = document.getElementById("error-message");
             const usernameField = document.getElementById("username");
             const passwordField = document.getElementById("password");
-        
+
             btnLogin.addEventListener("click", () => {
                 const user = usernameField.value;
                 const pass = passwordField.value;
@@ -285,7 +293,7 @@
                 // Usuarios válidos
                 if (
                     (user === "usuario1" && pass === "pass1") ||
-                    (user === "admin" && pass === "admin123") ||
+                    (user === "admi" && pass === "admi123") ||
                     (user === "jquintanacutipa" && pass === "10381927Ch") ||
                     (user === "usuario1" && pass === "usuario1") ||
                     (user === "usuario2" && pass === "pass2")
@@ -317,256 +325,230 @@
       </div>
 
 
+    <style>
+      :root {
+      --primary-color: #1d0555;
+      --secondary-color: #010233;
+      --text-color: #2c3e50;
+      --bg-color: #f8f9fa;
+      --transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
 
+    /* Estructura Principal Responsiva */
+    .main-container {
+      padding: 1rem;
+      max-width: 1600px;
+      margin: 0 auto;
+    }
 
+    .form-container {
+      
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      
+      /* box-shadow: 0 12px 24px rgba(0,0,0,0.08); */
+      animation: containerScale 0.6s ease;
+    }
 
+    @keyframes containerScale {
+      0% { transform: scale(0.98); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
 
+    /* Grupos de Formulario Animados */
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 1.2rem;
+      animation: slideIn 0.6s ease forwards;
+      opacity: 0;
+    }
 
+    @keyframes slideIn {
+      from { transform: translateX(-30px); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
 
+    .form-group:nth-child(1) { animation-delay: 0.1s; }
+    .form-group:nth-child(2) { animation-delay: 0.2s; }
+    .form-group:nth-child(3) { animation-delay: 0.3s; }
 
+    /* Elementos de Formulario Mejorados */
+    input, textarea {
+      width: 70%;
+      padding: 0.8rem;
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      transition: var(--transition);
+      background: rgba(255,255,255,0.95);
+    }
 
+    input:focus, textarea:focus {
+      border-color: var(--primary-color);
+      box-shadow: 0 0 15px rgba(52,152,219,0.2);
+      transform: translateY(-2px);
+    }
 
+    textarea {
+      min-height: 100px;
+      resize: vertical;
+    }
 
+    /* Botón Inteligente con Animación */
+    .btn {
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+      color: white;
+      padding: 0.8rem 2rem;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: var(--transition);
+      grid-column: 1 / -1;
+      justify-self: center;
+      box-shadow: 0 5px 15px rgba(52,152,219,0.3);
+      position: relative;
+      overflow: hidden;
+    }
 
+    .btn::after {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: rgba(255,255,255,0.1);
+      transform: rotate(45deg);
+      transition: var(--transition);
+    }
 
+    .btn:hover::after {
+      left: 50%;
+      top: 50%;
+    }
 
+    .btn:active {
+      transform: scale(0.98);
+    }
 
+    /* Sección de Fechas Dinámica */
+    #fechasContainer {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 1rem;
+      margin-top: 1.2rem;
+    }
 
+    /* Loader Moderno */
+    .loader {
+      width: 22px;
+      height: 22px;
+      border: 3px solid #f3f3f3;
+      border-top: 3px solid var(--primary-color);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
 
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
 
+    /* Mensaje de Proceso */
+    #procesoMensaje {
+      text-align: center;
+      padding: 1rem;
+      background: rgba(52,152,219,0.05);
+      border-radius: 8px;
+      margin-top: 1.5rem;
+      animation: fadeIn 0.4s ease;
+    }
 
-<style>
-  :root {
-  --primary-color: #1d0555;
-  --secondary-color: #010233;
-  --text-color: #2c3e50;
-  --bg-color: #f8f9fa;
-  --transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-}
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
 
-/* Estructura Principal Responsiva */
-.main-container {
-  padding: 1rem;
-  max-width: 1600px;
-  margin: 0 auto;
-}
+    /* Responsive Design Avanzado */
+    @media (max-width: 768px) {
+      .form-container {
+        grid-template-columns: 1fr;
+        padding: 1.5rem;
+      }
+      
+      .form-group {
+        margin-bottom: 1rem;
+      }
+      
+      input, textarea {
+        font-size: 0.9rem;
+        padding: 0.7rem;
+      }
+      
+      .btn {
+        /* width: 100%; */
+        padding: 0.8rem;
+      }
+    }
 
-.form-container {
-  
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  
-  /* box-shadow: 0 12px 24px rgba(0,0,0,0.08); */
-  animation: containerScale 0.6s ease;
-}
+    @media (max-width: 480px) {
+      .main-container {
+        padding: 0.5rem;
+      }
+      
+      .form-container {
+        border-radius: 12px;
+        padding: 1rem;
+      }
+      
+      #fechasContainer {
+        grid-template-columns: 1fr;
+      }
+    }
 
-@keyframes containerScale {
-  0% { transform: scale(0.98); opacity: 0; }
-  100% { transform: scale(1); opacity: 1; }
-}
+    /* Animaciones Adicionales */
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-5px); }
+    }
 
-/* Grupos de Formulario Animados */
-.form-group {
-  display: flex;
-  flex-direction: column;
-  margin-bottom: 1.2rem;
-  animation: slideIn 0.6s ease forwards;
-  opacity: 0;
-}
+    input:hover {
+      animation: float 3s ease-in-out infinite;
+    }
 
-@keyframes slideIn {
-  from { transform: translateX(-30px); opacity: 0; }
-  to { transform: translateX(0); opacity: 1; }
-}
+    /* Mejoras de Accesibilidad */
+    label {
+      font-size: 0.9rem;
+      color: var(--text-color);
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+      font-family: Arial, sans-serif;
+      font-style: italic;
+      transition: color 0.2s ease;
+    }
 
-.form-group:nth-child(1) { animation-delay: 0.1s; }
-.form-group:nth-child(2) { animation-delay: 0.2s; }
-.form-group:nth-child(3) { animation-delay: 0.3s; }
+    .form-group:focus-within label {
+      color: var(--primary-color);
+    }
 
-/* Elementos de Formulario Mejorados */
-input, textarea {
-  width: 70%;
-  padding: 0.8rem;
-  border: 2px solid #e0e0e0;
-  border-radius: 8px;
-  font-size: 0.95rem;
-  transition: var(--transition);
-  background: rgba(255,255,255,0.95);
-}
-
-input:focus, textarea:focus {
-  border-color: var(--primary-color);
-  box-shadow: 0 0 15px rgba(52,152,219,0.2);
-  transform: translateY(-2px);
-}
-
-textarea {
-  min-height: 100px;
-  resize: vertical;
-}
-
-/* Botón Inteligente con Animación */
-.btn {
-  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-  color: white;
-  padding: 0.8rem 2rem;
-  border: none;
-  border-radius: 8px;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: var(--transition);
-  grid-column: 1 / -1;
-  justify-self: center;
-  box-shadow: 0 5px 15px rgba(52,152,219,0.3);
-  position: relative;
-  overflow: hidden;
-}
-
-.btn::after {
-  content: '';
-  position: absolute;
-  top: -50%;
-  left: -50%;
-  width: 200%;
-  height: 200%;
-  background: rgba(255,255,255,0.1);
-  transform: rotate(45deg);
-  transition: var(--transition);
-}
-
-.btn:hover::after {
-  left: 50%;
-  top: 50%;
-}
-
-.btn:active {
-  transform: scale(0.98);
-}
-
-/* Sección de Fechas Dinámica */
-#fechasContainer {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  gap: 1rem;
-  margin-top: 1.2rem;
-}
-
-/* Loader Moderno */
-.loader {
-  width: 22px;
-  height: 22px;
-  border: 3px solid #f3f3f3;
-  border-top: 3px solid var(--primary-color);
-  border-radius: 50%;
-  animation: spin 0.8s linear infinite;
-}
-
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
-/* Mensaje de Proceso */
-#procesoMensaje {
-  text-align: center;
-  padding: 1rem;
-  background: rgba(52,152,219,0.05);
-  border-radius: 8px;
-  margin-top: 1.5rem;
-  animation: fadeIn 0.4s ease;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-/* Responsive Design Avanzado */
-@media (max-width: 768px) {
-  .form-container {
-    grid-template-columns: 1fr;
-    padding: 1.5rem;
-  }
-  
-  .form-group {
-    margin-bottom: 1rem;
-  }
-  
-  input, textarea {
-    font-size: 0.9rem;
-    padding: 0.7rem;
-  }
-  
-  .btn {
-    /* width: 100%; */
-    padding: 0.8rem;
-  }
-}
-
-@media (max-width: 480px) {
-  .main-container {
-    padding: 0.5rem;
-  }
-  
-  .form-container {
-    border-radius: 12px;
-    padding: 1rem;
-  }
-  
-  #fechasContainer {
-    grid-template-columns: 1fr;
-  }
-}
-
-/* Animaciones Adicionales */
-@keyframes float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-5px); }
-}
-
-input:hover {
-  animation: float 3s ease-in-out infinite;
-}
-
-/* Mejoras de Accesibilidad */
-label {
-  font-size: 0.9rem;
-  color: var(--text-color);
-  margin-bottom: 0.5rem;
-  font-weight: 500;
-  font-family: Arial, sans-serif;
-  font-style: italic;
-  transition: color 0.2s ease;
-}
-
-.form-group:focus-within label {
-  color: var(--primary-color);
-}
-
-</style>
-
-
-
-
-
-
+    </style>
 
     <!-- MAIN: Generador y Documentos (Se muestra luego del login) -->
     <div class="main-container" id="mainContainer">
       <!-- FORMULARIO MODERNO -->
       <div class="form-container" id="formulario">
-        <h1>Generador de Documento ESAM</h1>
+        <h1>Generador de plantillas Esam</h1>
         <p>
           Completa los campos y presiona <strong>PROCESAR</strong>. Luego se
-          mostrará el documento para visualizar o descargar.
+          generara la carta.
         </p><br>
           <!-- Botón PROCESAR -->
         <button class="btn" id="btnProcesar">PROCESAR</button><p id="procesoMensaje" class="hidden">
-          <span class="loader" style="color:#0789b1"></span>Espere.....
-        </p><br><br>
-        <!-- Página 1: Datos de la primera hoja -->
-
+          <span class="loader" style="color:#19066e"></span>Procesando.....
+        </p>
         <div class="form-group">
-          <label for="inputMscName">Msc. XX (Nombre del Docente)</label>
+          <label for="inputMscName">Msc. XX (Docente..)</label>
           <input
             type="text"
             id="inputMscName"
@@ -574,7 +556,7 @@ label {
           />
         </div>
         <div class="form-group">
-          <label for="inputDiplomado">Diplomado en:</label>
+          <label for="inputDiplomado">Diplomado en:...</label>
           <input
             type="text"
             id="inputDiplomado"
@@ -607,215 +589,197 @@ label {
         <div class="form-group">
           <label for="inputFechas">Fecha de clases</label>
           <input
-            type="date"
             id="inputFechas"
             class="form-control"
+            placeholder="Opcional..."
             value=""
           />
         </div>
         
-        <script>
-          // Establecer la fecha actual por defecto al cargar la página
-          document.addEventListener('DOMContentLoaded', function () {
-            const inputFecha = document.getElementById('inputFechas');
-            const hoy = new Date().toISOString().split('T')[0];
-            inputFecha.value = hoy;
-          });
-        </script>
         
-
+      
         <!-- Página 3: 10 Fechas de entrega -->
         <div class="form-group">
           <h2>Fechas Entrega</h2>
           <div id="fechasContainer"></div>
         </div>
 
-     
-    <!-- Asegúrate de incluir FontAwesome o usa un ícono que prefieras -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+      <!-- Asegúrate de incluir FontAwesome o usa un ícono que prefieras -->
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
-    <style>
-      /* Contenedor para la animación */
-      #procesoMensaje {
-        display: flex;
-        align-items: center;
-        font-family: Arial, sans-serif;
-        font-size: 18px;
-        color: #333;
-      }
-
-      /* Espacio entre el icono y el texto */
-      .loader {
-        width: 24px;
-        height: 24px;
-        border: 3px solid #f3f3f3;
-        border-top: 3px solid #3498db;
-        border-radius: 50%;
-        margin-right: 10px;
-        animation: spin 1.5s linear infinite;
-      }
-
-      /* Animación de rotación */
-      @keyframes spin {
-        0% {
-          transform: rotate(0deg);
+      <style>
+        /* Contenedor para la animación */
+        #procesoMensaje {
+          display: flex;
+          align-items: center;
+          font-family: Arial, sans-serif;
+          font-size: 18px;
+          color: #333;
         }
-        100% {
-          transform: rotate(360deg);
+
+        /* Espacio entre el icono y el texto */
+        .loader {
+          width: 24px;
+          height: 24px;
+          border: 3px solid #f3f3f3;
+          border-top: 3px solid #3498db;
+          border-radius: 50%;
+          margin-right: 10px;
+          animation: spin 1.5s linear infinite;
         }
-      }
 
-      /* Efecto de desvanecimiento para la transición */
-      .hidden {
-        opacity: 0;
-        transition: opacity 0.3s ease-in-out;
-      }
+        /* Animación de rotación */
+        @keyframes spin {
+          0% {
+            transform: rotate(0deg);
+          }
+          100% {
+            transform: rotate(360deg);
+          }
+        }
 
-      .visible {
-        opacity: 1;
-      }
-    </style>
+        /* Efecto de desvanecimiento para la transición */
+        .hidden {
+          opacity: 0;
+          transition: opacity 0.3s ease-in-out;
+        }
+
+        .visible {
+          opacity: 1;
+        }
+      </style>
+        </div>
+        <!-- Botones de acción (Ver, Descargar, Compartir, Historial) -->
+      <div class="action-container hidden" id="botones-acciones">
+        <button class="btn" id="btnVer">
+          <i data-lucide="eye"  style="color: #ff7301;"></i> 
+        </button>
+        <button class="btn" id="btnDescargar">
+          <i data-lucide="download"  style="color: #0609be;"></i> 
+        </button>
+        <button class="btn" id="btnCompartir">
+          <i data-lucide="share-2" style="color: #05976b;"></i>
+        </button>
+        <button class="btn" id="btnHistorial">
+          <i data-lucide="history"  style="color: #e0dd03;"></i>
+        </button>
       </div>
-
-      <!-- Botones de acción (Ver, Descargar, Compartir, Historial) -->
-<div class="action-container hidden" id="botones-acciones">
-  <button class="btn" id="btnVer">
-    <i data-lucide="eye"  style="color: #ff7301;"></i> 
-  </button>
-  <button class="btn" id="btnDescargar">
-    <i data-lucide="download"  style="color: #0609be;"></i> 
-  </button>
-  <button class="btn" id="btnCompartir">
-    <i data-lucide="share-2" style="color: #05976b;"></i>
-  </button>
-  <button class="btn" id="btnHistorial">
-    <i data-lucide="history"  style="color: #e0dd03;"></i>
-  </button>
-</div>
-
-
-      <!-- HISTORIAL DE DOCUMENTOS -->
+        <!-- HISTORIAL DE DOCUMENTOS -->
       <div class="history-container hidden" id="historyContainer">
-        <h2>Historial de Documentos Generados</h2>
-        <div id="historyList"></div>
-        <button class="btn" id="btnCerrarHistorial">Cerrar Historial</button>
+          <h2>Historial de Documentos Generados</h2>
+          <div id="historyList"></div>
+          <button class="btn" id="btnCerrarHistorial">Cerrar Historial</button>
       </div>
+      <style>
+          .page {
+            position: relative;
+            width: 210mm; /* A4 */
+            min-height: 297mm; /* A4 */
+            margin: 20px auto;
+            background: #fff;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            page-break-after: always;
+            padding: 0;
+          }
+          /* Página 1 con barra izquierda */
+          .page1 .left-column {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 48mm;
+            height: 100%;
+            background: #071e3b;
+            /* padding: 20px; */
+            text-align: center;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+          }
+          .page1 .left-column img {
+            max-width: 50%;
+            height: auto;
+            margin-bottom: 35px;
+          }
+          .page1 .left-column p {
+            color: #fff;
+            font-size: 0.7em;
+            margin-top: 750px;
+            line-height: 1.3em;
+            text-align: center;  /* Centrado del texto */
+            padding-bottom: 10px;  /* Espacio entre el texto y la línea */
+            position: relative; /* Necesario para colocar el pseudo-elemento */
+          }
 
-<style>
-  .page {
-        position: relative;
-        width: 210mm; /* A4 */
-        min-height: 297mm; /* A4 */
-        margin: 20px auto;
-        background: #fff;
-        box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
-        overflow: hidden;
-        page-break-after: always;
-        padding: 0;
-      }
-      /* Página 1 con barra izquierda */
-      .page1 .left-column {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 48mm;
-        height: 100%;
-        background: #071e3b;
-        /* padding: 20px; */
-        text-align: center;
-        -webkit-print-color-adjust: exact;
-        print-color-adjust: exact;
-      }
-      .page1 .left-column img {
-        max-width: 50%;
-        height: auto;
-        margin-bottom: 35px;
-      }
-      .page1 .left-column p {
-        color: #fff;
-        font-size: 0.7em;
-        margin-top: 750px;
-        line-height: 1.3em;
-        text-align: center;  /* Centrado del texto */
-        padding-bottom: 10px;  /* Espacio entre el texto y la línea */
-        position: relative; /* Necesario para colocar el pseudo-elemento */
-      }
+          .page1 .left-column p::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 100%;
+            height: 3px;  /* Altura de la línea */
+            background: linear-gradient(to right, #021d92, #ff0800, #f10000); /* Degradado */
+          }
+          .page1 .right-column {
+            margin-left: 48mm;
+            padding: 30px 20px;
+          }
+          /* Páginas 2 y 3 (ancho completo) */
+          .full-content {
+            width: 100%;
+            padding: 30px 20px;
+          }
+          .page1-content p,
+          .page2-content p,
+          .page3-content p {
+            text-align: justify;
+            font-family: Arial, Helvetica, sans-serif;
+            margin-bottom: 10px;
+          }
+          .page2-content table,
+          .page3-content table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 10px 0;
+          }
+          .page3-content table,
+          .page3-content th,
+          .page3-content td {
+            border: 1px solid #000;
+          }
+          .page3-content th,
+          .page3-content td {
+            padding: 5px;
+            text-align: left;
+            vertical-align: top;
+          }
+          .data-field {
+            font-weight: bold;
+            color: #000;
+          }
+          /* IMPRESIÓN: Se ocultan formulario, botones y historial */
+          @media print {
+            .form-container,
+            .action-container,
+            .history-container {
+              display: none !important;
+            }
+            body {
+              background: #fff;
+            }
+            * {
+              -webkit-print-color-adjust: exact;
+              print-color-adjust: exact;
+            }
+          }
+          .history-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+          }
+      </style>
 
-      .page1 .left-column p::after {
-        content: '';
-        position: absolute;
-        left: 0;
-        bottom: 0;
-        width: 100%;
-        height: 3px;  /* Altura de la línea */
-        background: linear-gradient(to right, #021d92, #ff0800, #f10000); /* Degradado */
-      }
-
-
-      .page1 .right-column {
-        margin-left: 48mm;
-        padding: 30px 20px;
-      }
-      /* Páginas 2 y 3 (ancho completo) */
-      .full-content {
-        width: 100%;
-        padding: 30px 20px;
-      }
-      .page1-content p,
-      .page2-content p,
-      .page3-content p {
-        text-align: justify;
-        font-family: Arial, Helvetica, sans-serif;
-        margin-bottom: 10px;
-      }
-      .page2-content table,
-      .page3-content table {
-        width: 100%;
-        border-collapse: collapse;
-        margin: 10px 0;
-      }
-      .page3-content table,
-      .page3-content th,
-      .page3-content td {
-        border: 1px solid #000;
-      }
-      .page3-content th,
-      .page3-content td {
-        padding: 5px;
-        text-align: left;
-        vertical-align: top;
-      }
-      .data-field {
-        font-weight: bold;
-        color: #000;
-      }
-      /* IMPRESIÓN: Se ocultan formulario, botones y historial */
-      @media print {
-        .form-container,
-        .action-container,
-        .history-container {
-          display: none !important;
-        }
-        body {
-          background: #fff;
-        }
-        * {
-          -webkit-print-color-adjust: exact;
-          print-color-adjust: exact;
-        }
-      }
-      .history-actions {
-        display: flex;
-        gap: 10px;
-        margin-top: 10px;
-      }
-</style>
-
-
-
-
-      <!-- DOCUMENTO GENERADO -->
-      <div id="documento">
+        <!--DOCUMENTO GENERADO-->
+        <div id="documento">
         <!-- Página 1: Con barra izquierda -->
         <div class="page page1">
           <div class="left-column">
@@ -827,11 +791,11 @@ label {
               <img src="https://www.esam.edu.bo/img/logo_unsxx.png" alt="Logo SXX" />
               <img src="https://www.esam.edu.bo/img/logo_esam_principal.png" alt="Logo esam" />
           </div>
-          
             <p>
               <strong style="display: block; text-align: center; position: relative;">SUCURSAL
               <span style="display: block; width: 150px; height: 2px; margin: 10px auto 0; background: linear-gradient(to right, #020463, #eb1203);"></span>
-            </strong><br>
+            </strong>
+            <br>
               Calle Sucre #976<br />
               FENTE A ENTEL<br/>
               <strong>Escuela de Negocios</strong><br>
@@ -912,8 +876,7 @@ label {
           <div class="full-content page2-content">
             <h3>
               <span id="diplomadoOutput2" class="data-field"
-                >DIPLOMADO EN XX</span
-              >
+                >DIPLOMADO EN XX</span>
               – ESAM MONTEAGUNDO
             </h3>
             <table border="1" cellspacing="0" cellpadding="5" style="width: 100%; border-collapse: collapse; text-align: center; font-family: Arial, sans-serif;">
@@ -931,7 +894,7 @@ label {
                       <span id="numeroModuloOutput" class="data-field"></span>
                     </strong>
                     <p>
-                      <strong>MÓDULO:</strong>
+                      <strong >MÓDULO:</strong>
                       <span id="moduloOutput" class="data-field">---</span>
                     </p>
                   </td>
@@ -965,8 +928,7 @@ label {
               LINK DE DESCARGA.<br />
               <a
                 href="https://drive.google.com/drive/folders/1PQ8TY-lfSIL87QQ_SWjmwGUiRFPj_NZ0?usp=sharing"
-                target="_blank"
-              >
+                target="_blank">
                 https://drive.google.com/drive/folders/1PQ8TY-lfSIL87QQ_SWjmwGUiRFPj_NZ0?usp=sharing
               </a>
             </p><br><br>
@@ -1069,7 +1031,7 @@ label {
               Las tareas deben tener un plazo mínimo de 7 a 9 días y para dar el tiempo suficiente a cada participante de realizar la misma y poder reforzar lo aprendido viendo los videos de las grabaciones, de esta manera el área académica puede realizar el seguimiento correspondiente a los participantes.
               Usted como docente debe informar mediante el grupo de WhatsApp al momento en el que habilita una actividad en la plataforma, las actividades deben tener como hora de finalización las 23:59pm.
               Las calificaciones se deben registrar por su persona en nuestra Plataforma Virtual, de forma obligatoria, debiendo, además, enviar la planilla de notas firmada por su persona; en un plazo hasta 7 días luego de culminadas las sesiones sincrónicas y la última fecha de presentación de actividades.
-            </p>
+            </p><br><br><br><br><br><br><br><br><br>
             <p style="text-align: justify;">
               <strong>PARA LAS CLASES DE ZOOM:</strong><br>
               Debe ingresar 5 minutos antes. El fondo de Zoom (facilitado por coordinación académica) puede descargarse desde el siguiente enlace:<br>
@@ -1137,10 +1099,10 @@ label {
         </p>
         <p style="text-align: justify;">
           En caso de que surja algún inconveniente que impida su presencia en el desarrollo del módulo, deberá notificar con antelación y otorgar un reemplazo de grado académico igual o superior al suyo, con el fin de velar la calidad académica que la Institución imparte a los posgraduantes, siempre previa autorización de coordinación académica.
-         </p>
+         </p><br><br><br><br><br><br><br>
           <p style="text-align: justify">
             <strong>Las clases, días y horarios no pueden ser sujetos a modificación alguna excepto por feriados establecidos.
-            Sin embargo, si el docente considera necesario pasar clases adicionales serán organizadas junto a coordinación académica pero no serán retribuidas monetariamente</strong>           
+            Sin embargo, si el docente considera necesario pasar clases adicionales serán organizadas junto a coordinación académica pero no serán retribuidas monetariamente</strong>         
           </p>
             <p style="text-align: justify">
               <strong
@@ -1219,38 +1181,41 @@ label {
 
       // Si la URL tiene ?view=doc, cargar en modo solo visualización
       (function checkViewMode() {
-        const params = getURLParams();
-        if (params.view && params.view === "doc") {
-          document.getElementById("formulario").classList.add("hidden");
-          document.getElementById("botones-acciones").classList.add("hidden");
-          document.getElementById("documento").style.display = "block";
-          if (params.msc)
-            document.getElementById("mscNameOutput").textContent = params.msc;
-          if (params.dip) {
-            document.getElementById("diplomadoOutput").textContent = params.dip;
-            document.getElementById("diplomadoOutput2").textContent =
-              params.dip;
-          }
-          if (params.mod)
-            document.getElementById("moduloOutput").textContent = params.mod;
-          if (params.num)
-            document.getElementById("numeroModuloOutput").textContent =
-              params.num;
-          if (params.cont)
-            document.getElementById("contenidoOutput").textContent =
-              params.cont;
-          if (params.fchas)
-            document.getElementById("fechasOutput").textContent = params.fchas;
-          for (let i = 0; i < 10; i++) {
-            const key = "fecha" + i;
-            const el = document.getElementById("fechaEntrega" + i);
-            if (el && params[key]) el.textContent = params[key];
-          }
-          document.getElementById("fechaActual").textContent =
-            getFormattedDate();
-        }
-      })();
+          const params = getURLParams();
+          if (params.view && params.view === "doc") {
+              // Ocultar login y mostrar documento
+              document.getElementById("loginContainer").style.display = "none";
+              document.getElementById("mainContainer").style.display = "block";
+              
+              // Ocultar formulario y botones
+              document.getElementById("formulario").classList.add("hidden");
+              document.getElementById("botones-acciones").classList.add("hidden");
+              
+              // Mostrar documento
+              document.getElementById("documento").style.display = "block";
 
+              // Cargar datos desde parámetros URL
+              if (params.msc) document.getElementById("mscNameOutput").textContent = params.msc;
+              if (params.dip) {
+                  document.getElementById("diplomadoOutput").textContent = params.dip;
+                  document.getElementById("diplomadoOutput2").textContent = params.dip;
+              }
+              if (params.mod) document.getElementById("moduloOutput").textContent = params.mod;
+              if (params.num) document.getElementById("numeroModuloOutput").textContent = params.num;
+              if (params.cont) document.getElementById("contenidoOutput").textContent = params.cont;
+              if (params.fchas) document.getElementById("fechasOutput").textContent = params.fchas;
+
+              // Cargar fechas de entrega
+              for (let i = 0; i < 10; i++) {
+                  const key = "fecha" + i;
+                  const el = document.getElementById("fechaEntrega" + i);
+                  if (el && params[key]) el.textContent = params[key];
+              }
+
+              // Establecer fecha actual
+              document.getElementById("fechaActual").textContent = getFormattedDate();
+          }
+      })();
       // Generar 10 campos para fechas de entrega en el formulario
   const fechasContainer = document.getElementById("fechasContainer");
   for (let i = 0; i < 10; i++) {
@@ -1411,7 +1376,7 @@ label {
         navigator.clipboard
           .writeText(url)
           .then(() => {
-            alert("¡Enlace copiado al portapapeles!");
+            alert("¡Enlace copiado!");
           })
           .catch((err) => {
             alert("Error al copiar el enlace.");
