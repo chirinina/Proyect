@@ -531,9 +531,75 @@
     .form-group:focus-within label {
       color: var(--primary-color);
     }
-
+    @media print {
+    /* Mantener bordes de tablas */
+    table, th, td {
+        border: 1px solid #000 !important;
+        border-collapse: collapse !important;
+    }
+    
+    /* Ajustar márgenes para impresión */
+    @page {
+        margin: 0cm;
+    }
+    
+    /* Ocultar botón de descarga en el PDF */
+    #btnDescargarShared {
+        display: none !important;
+    }
+    
+    /* Mantener sombras y bordes del documento */
+    .page {
+        /* box-shadow: none !important; */
+        /* margin: 0 auto !important; */
+    }
+}
     </style>
-
+<!-- Botón flotante para descarga -->
+<button 
+    id="btnDescargarShared"
+    class="hidden"
+    style="
+        position: fixed;
+        bottom: 10px;
+        right: 10px;
+        background: none;
+        padding: 14px;
+        border: none;
+        cursor: pointer;
+        z-index: 1000;
+        color: #06047c;  /* Azul intenso */
+        transition: all 0.3s ease;
+    ">
+    <svg 
+        style="
+            width: 36px;
+            height: 36px;
+            animation: pulse 1.5s ease-in-out infinite;" 
+        viewBox="0 0 24 24" 
+        fill="none" 
+        stroke="currentColor" 
+        stroke-width="3"
+        stroke-linecap="round" 
+        stroke-linejoin="round">
+        <path d="M8 17l4 4 4-4"/>
+        <path d="M12 12v9"/>
+        <path d="M20.88 18.09A5 5 0 0 0 18 9h-1.26A7 7 0 1 0 12 21"/>
+    </svg>
+</button>
+<style>
+    @keyframes pulse {
+        0%, 100% { transform: translateY(0) scale(1); }
+        50% { transform: translateY(-5px) scale(1.05); }
+    }
+    #btnDescargarShared:hover {
+        color: #fa7900;  /* Azul más oscuro al hover */
+        background: rgba(241, 241, 241);
+    }
+    #btnDescargarShared:active {
+        transform: scale(0.92);
+    }
+</style>
     <!-- MAIN: Generador y Documentos (Se muestra luego del login) -->
     <div class="main-container" id="mainContainer">
       <!-- FORMULARIO MODERNO -->
@@ -663,7 +729,60 @@
         <button class="btn" id="btnHistorial">
           <i data-lucide="history"  style="color: #e0dd03;"></i>
         </button>
+        <button class="btn" id="btnCorreo">
+          <i data-lucide="mail" style="color: #ff0000;"></i>
+        </button>
       </div>
+      <!-- Formulario flotante para correo -->
+<div id="emailForm" class="hidden" style="
+position: absolute;
+background: white;
+padding: 15px;
+border-radius: 8px;
+box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+z-index: 1000;
+margin-top: 10px;
+">
+<input 
+    type="email" 
+    id="emailInput" 
+    placeholder="Correo del destinatario"
+    style="
+        padding: 8px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        margin-bottom: 8px;
+        width: 100%;
+">
+<div style="display: flex; gap: 8px;">
+    <button 
+        type="button"
+        onclick="enviarCorreo()"
+        style="
+            padding: 8px 15px;
+            background: #0a0652;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+    ">
+        Enviar
+    </button>
+    <button 
+        type="button" 
+        onclick="document.getElementById('emailForm').classList.add('hidden')"
+        style="
+            padding: 8px 15px;
+            background: #666;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+    ">
+        Cancelar
+    </button>
+</div>
+</div>
         <!-- HISTORIAL DE DOCUMENTOS -->
       <div class="history-container hidden" id="historyContainer">
           <h2>Historial de Documentos Generados</h2>
@@ -672,16 +791,18 @@
       </div>
       <style>
           .page {
-            position: relative;
-            width: 210mm; /* A4 */
-            min-height: 297mm; /* A4 */
-            margin: 20px auto;
-            background: #fff;
-            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
-            overflow: hidden;
-            page-break-after: always;
-            padding: 0;
-          }
+        position: relative;
+        width: 210mm; /* A4 */
+        min-height: 297mm; /* A4 */
+        margin: 20px auto;
+        background: #fff;
+        box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+        page-break-after: always;
+        padding: 0;
+        border: 1px solid black; /* Borde delgado de color negro */
+        } 
+
           /* Página 1 con barra izquierda */
           .page1 .left-column {
             position: absolute;
@@ -776,6 +897,35 @@
             gap: 10px;
             margin-top: 10px;
           }
+          @media print {
+    /* RESTAURAR BORDES DE TABLAS */
+    table {
+        border: 1px solid #000 !important;
+        border-collapse: collapse !important;
+        width: 100% !important;
+    }
+    
+    th, td {
+        border: 1px solid #000 !important;
+        padding: 8px !important;
+        text-align: left !important;
+    }
+    
+    /* AJUSTES FINALES DE DISEÑO */
+    .page {
+        margin: 0 auto !important;
+        border: none !important;
+    }
+    
+    @page {
+        margin: 1cm;
+    }
+    
+    /* OCULTAR BOTÓN EN PDF */
+    #btnDescargarShared {
+        display: none !important;
+    }
+}
       </style>
 
         <!--DOCUMENTO GENERADO-->
@@ -1031,7 +1181,7 @@
               Las tareas deben tener un plazo mínimo de 7 a 9 días y para dar el tiempo suficiente a cada participante de realizar la misma y poder reforzar lo aprendido viendo los videos de las grabaciones, de esta manera el área académica puede realizar el seguimiento correspondiente a los participantes.
               Usted como docente debe informar mediante el grupo de WhatsApp al momento en el que habilita una actividad en la plataforma, las actividades deben tener como hora de finalización las 23:59pm.
               Las calificaciones se deben registrar por su persona en nuestra Plataforma Virtual, de forma obligatoria, debiendo, además, enviar la planilla de notas firmada por su persona; en un plazo hasta 7 días luego de culminadas las sesiones sincrónicas y la última fecha de presentación de actividades.
-            </p><br><br><br><br><br><br><br><br><br>
+            </p><br><br><br>
             <p style="text-align: justify;">
               <strong>PARA LAS CLASES DE ZOOM:</strong><br>
               Debe ingresar 5 minutos antes. El fondo de Zoom (facilitado por coordinación académica) puede descargarse desde el siguiente enlace:<br>
@@ -1093,13 +1243,13 @@
               <li><strong>Resultados de la Ejecución del Módulo</strong></li>
               <li><strong>Planilla de Notas Incluido Recuperatorio, Firmado a Pie de Página por Usted como Respaldo de la Misma. (Previamente las Notas Subidas a la Plataforma)</strong></li>
           </ol>
-            
+            <br><br><br><br><br><br><br><br><br><br>
           <p style="text-align: justify;">
             <strong>NOTA.</strong>- La empresa no es partidaria de temas políticos, por ende, se prohíbe al plantel docente mencionar estos elementos dentro del proceso formativo.
         </p>
         <p style="text-align: justify;">
           En caso de que surja algún inconveniente que impida su presencia en el desarrollo del módulo, deberá notificar con antelación y otorgar un reemplazo de grado académico igual o superior al suyo, con el fin de velar la calidad académica que la Institución imparte a los posgraduantes, siempre previa autorización de coordinación académica.
-         </p><br><br><br><br><br><br><br>
+         </p>
           <p style="text-align: justify">
             <strong>Las clases, días y horarios no pueden ser sujetos a modificación alguna excepto por feriados establecidos.
             Sin embargo, si el docente considera necesario pasar clases adicionales serán organizadas junto a coordinación académica pero no serán retribuidas monetariamente</strong>         
@@ -1141,6 +1291,72 @@
     </div>
 
     <script>
+    // Mostrar formulario de correo
+    document.getElementById('btnCorreo').addEventListener('click', function(e) {
+    const urlCompartir = document.getElementById('btnCompartir').getAttribute('data-url');
+    const emailForm = document.getElementById('emailForm');
+    
+    if (!urlCompartir) {
+        alert("Primero genera un documento con el botón PROCESAR");
+        return;
+    }
+
+    // Posicionar el formulario
+    const rect = this.getBoundingClientRect();
+    emailForm.style.left = `${rect.left}px`;
+    emailForm.style.top = `${rect.bottom + 10}px`;
+    
+    emailForm.classList.remove('hidden');
+    document.getElementById('emailInput').focus();
+});
+
+function enviarCorreo() {
+    const email = document.getElementById('emailInput').value;
+    const urlCompartir = document.getElementById('btnCompartir').getAttribute('data-url');
+    
+    if (!email || !email.includes('@') || !email.includes('.')) {
+        alert("Ingrese un correo válido");
+        return;
+    }
+
+    // Crear HTML con diseño profesional
+    const asunto = "Documento Generado - ESAM";
+    const cuerpoHTML = `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 20px auto;">
+            <h2 style="color: #0a0652; border-bottom: 3px solid #0a0652; padding-bottom: 10px;">
+                Documento Generado - ESAM
+            </h2>
+            <p style="margin: 15px 0; font-size: 16px; color: #333;">
+                Haga clic en el botón para ver el documento:
+            </p>
+            <a href="${urlCompartir}" 
+               style="display: inline-block; 
+                      background: #0a0652; 
+                      color: white !important; 
+                      padding: 12px 25px; 
+                      text-decoration: none; 
+                      border-radius: 5px; 
+                      font-weight: bold;
+                      transition: all 0.3s ease;">
+                VER DOCUMENTO
+            </a>
+            <p style="margin-top: 20px; color: #666;">
+                Si el botón no funciona, copie este enlace:<br>
+                <span style="word-break: break-all;">${urlCompartir}</span>
+            </p>
+        </div>
+    `;
+
+    // Codificar para URL
+    const cuerpoCodificado = encodeURIComponent(cuerpoHTML);
+    
+    // Abrir Gmail con HTML
+    window.open(`https://mail.google.com/mail/?view=cm&fs=1&to=${email}&su=${asunto}&body=${cuerpoCodificado}&bcc=${email}`, '_blank');
+    
+    // Limpiar y ocultar formulario
+    document.getElementById('emailForm').classList.add('hidden');
+    document.getElementById('emailInput').value = '';
+}
       // Función para formatear la fecha actual en español
       function getFormattedDate() {
         const date = new Date();
@@ -1181,41 +1397,48 @@
 
       // Si la URL tiene ?view=doc, cargar en modo solo visualización
       (function checkViewMode() {
-          const params = getURLParams();
-          if (params.view && params.view === "doc") {
-              // Ocultar login y mostrar documento
-              document.getElementById("loginContainer").style.display = "none";
-              document.getElementById("mainContainer").style.display = "block";
-              
-              // Ocultar formulario y botones
-              document.getElementById("formulario").classList.add("hidden");
-              document.getElementById("botones-acciones").classList.add("hidden");
-              
-              // Mostrar documento
-              document.getElementById("documento").style.display = "block";
+    const params = getURLParams();
+    if (params.view && params.view === "doc") {
+        // Ocultar elementos no necesarios
+        document.getElementById("loginContainer").style.display = "none";
+        document.getElementById("formulario").classList.add("hidden");
+        document.getElementById("botones-acciones").classList.add("hidden");
+        
+        // Mostrar documento
+        document.getElementById("mainContainer").style.display = "block";
+        document.getElementById("documento").style.display = "block";
+        
+        // Configurar botón de descarga
+        const btnDescargar = document.getElementById("btnDescargarShared");
+        if (btnDescargar) {
+            btnDescargar.classList.remove("hidden");
+            btnDescargar.onclick = () => {
+                window.print(); // Función de descarga
+            };
+        }
 
-              // Cargar datos desde parámetros URL
-              if (params.msc) document.getElementById("mscNameOutput").textContent = params.msc;
-              if (params.dip) {
-                  document.getElementById("diplomadoOutput").textContent = params.dip;
-                  document.getElementById("diplomadoOutput2").textContent = params.dip;
-              }
-              if (params.mod) document.getElementById("moduloOutput").textContent = params.mod;
-              if (params.num) document.getElementById("numeroModuloOutput").textContent = params.num;
-              if (params.cont) document.getElementById("contenidoOutput").textContent = params.cont;
-              if (params.fchas) document.getElementById("fechasOutput").textContent = params.fchas;
+        // Cargar datos desde parámetros URL
+        if (params.msc) document.getElementById("mscNameOutput").textContent = params.msc;
+        if (params.dip) {
+            document.getElementById("diplomadoOutput").textContent = params.dip;
+            document.getElementById("diplomadoOutput2").textContent = params.dip;
+        }
+        if (params.mod) document.getElementById("moduloOutput").textContent = params.mod;
+        if (params.num) document.getElementById("numeroModuloOutput").textContent = params.num;
+        if (params.cont) document.getElementById("contenidoOutput").textContent = params.cont;
+        if (params.fchas) document.getElementById("fechasOutput").textContent = params.fchas;
 
-              // Cargar fechas de entrega
-              for (let i = 0; i < 10; i++) {
-                  const key = "fecha" + i;
-                  const el = document.getElementById("fechaEntrega" + i);
-                  if (el && params[key]) el.textContent = params[key];
-              }
+        // Cargar fechas de entrega
+        for (let i = 0; i < 10; i++) {
+            const key = "fecha" + i;
+            const el = document.getElementById("fechaEntrega" + i);
+            if (el && params[key]) el.textContent = params[key];
+        }
 
-              // Establecer fecha actual
-              document.getElementById("fechaActual").textContent = getFormattedDate();
-          }
-      })();
+        // Fecha actual
+        document.getElementById("fechaActual").textContent = getFormattedDate();
+    }
+})();
       // Generar 10 campos para fechas de entrega en el formulario
   const fechasContainer = document.getElementById("fechasContainer");
   for (let i = 0; i < 10; i++) {
