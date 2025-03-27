@@ -1310,6 +1310,25 @@ margin-top: 10px;
     document.getElementById('emailInput').focus();
 });
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// funcion del correco electrnico
 function enviarCorreo() {
     const email = document.getElementById('emailInput').value;
     const urlCompartir = document.getElementById('btnCompartir').getAttribute('data-url');
@@ -1319,44 +1338,58 @@ function enviarCorreo() {
         return;
     }
 
-    // Crear HTML con diseño profesional
-    const asunto = "Documento Generado - ESAM";
-    const cuerpoHTML = `
-        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 20px auto;">
-            <h2 style="color: #0a0652; border-bottom: 3px solid #0a0652; padding-bottom: 10px;">
-                Documento Generado - ESAM
-            </h2>
-            <p style="margin: 15px 0; font-size: 16px; color: #333;">
-                Haga clic en el botón para ver el documento:
-            </p>
-            <a href="${urlCompartir}" 
-               style="display: inline-block; 
-                      background: #0a0652; 
-                      color: white !important; 
-                      padding: 12px 25px; 
-                      text-decoration: none; 
-                      border-radius: 5px; 
-                      font-weight: bold;
-                      transition: all 0.3s ease;">
-                VER DOCUMENTO
-            </a>
-            <p style="margin-top: 20px; color: #666;">
-                Si el botón no funciona, copie este enlace:<br>
-                <span style="word-break: break-all;">${urlCompartir}</span>
-            </p>
-        </div>
+    // 1. Crear contenido del correo con formato profesional
+    const cuerpo = `
+        -----------------------------------------------
+        |            ESCUELA DE NEGOCIOS ESAM          |
+        |         SUCURSAL SUCRE - BOLIVIA             |
+        -----------------------------------------------
+        
+        *Diplomado:* ${document.getElementById('inputDiplomado').value}
+        *Módulo:* ${document.getElementById('inputModulo').value}
+        *Fecha de generación:* ${new Date().toLocaleDateString()}
+        
+        ==============================================
+        ENLACE AL DOCUMENTO:
+        ${urlCompartir}
+        ==============================================
+        
+        Instrucciones:
+        1. Haga clic en el enlace superior
+        2. El documento incluye 3 páginas con toda la información
+        3. Descargue el PDF usando el botón correspondiente
+        
+        -----------------------------------------------
+        Contacto: coordinacion@esam.edu.bo | Tel: +591 12345678
+        Dirección: Calle Sucre #976, Sucre, Bolivia
+        -----------------------------------------------
     `;
 
-    // Codificar para URL
-    const cuerpoCodificado = encodeURIComponent(cuerpoHTML);
+    // 2. Codificar y acortar URL visualmente
+    const cuerpoCodificado = encodeURIComponent(cuerpo)
+        .replace(/%25E2%2594%2580/g, '-') // Mejorar legibilidad
+        .replace(/%20/g, ' ');
+
+    // 3. Abrir Gmail con parámetros
+    const mailtoLink = `https://mail.google.com/mail/?view=cm&fs=1&to=${email}&su=Documento%20Oficial%20ESAM&body=${cuerpoCodificado}`;
     
-    // Abrir Gmail con HTML
-    window.open(`https://mail.google.com/mail/?view=cm&fs=1&to=${email}&su=${asunto}&body=${cuerpoCodificado}&bcc=${email}`, '_blank');
+    // 4. Abrir en ventana optimizada
+    window.open(mailtoLink, '_blank', 'width=800,height=600');
     
-    // Limpiar y ocultar formulario
+    // 5. Limpiar formulario
     document.getElementById('emailForm').classList.add('hidden');
     document.getElementById('emailInput').value = '';
 }
+
+
+
+
+
+
+
+
+
+
       // Función para formatear la fecha actual en español
       function getFormattedDate() {
         const date = new Date();
