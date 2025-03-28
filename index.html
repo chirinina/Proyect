@@ -2,6 +2,7 @@
 <html lang="es">
   <head>
     <meta charset="UTF-8" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <title>Esam Sucre Sucursal</title>
     <style>
       /* RESETEO BÁSICO */
@@ -52,36 +53,67 @@
         margin-top: 20px;
       }
       /* BOTONES DE ACCIÓN (Ver, Descargar, Compartir, Historial) */
-      .action-container {
-        width: 90%;
-        max-width: 600px;
-        margin: 20px auto;
-        text-align: center;
-      }
-      /* CONTENEDOR DEL HISTORIAL */
-      .history-container {
-        width: 90%;
-        max-width: 600px;
-        margin: 20px auto;
-        background: #fff;
-        padding: 20px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+       /* Nuevos estilos para el historial */
+    .history-section {
+        background: #f8f9fa;
         border-radius: 8px;
-        display: none;
-      }
-      .history-container h2 {
-        text-align: center;
-        margin-bottom: 15px;
-      }
-      .history-item {
-        border-bottom: 1px solid #ccc;
-        padding: 10px 0;
+        padding: 15px;
+        margin-top: 20px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        max-height: 400px;
+        overflow-y: auto;
+    }
+
+    .history-item {
         display: flex;
         justify-content: space-between;
         align-items: center;
+        padding: 10px;
+        margin: 5px 0;
+        background: white;
+        border-radius: 6px;
+        transition: all 0.2s ease;
+    }
+
+    .history-item:hover {
+        transform: translateX(5px);
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .history-date {
+        font-family: 'Courier New', monospace;
+        color: #666;
+        font-size: 0.9em;
+    }
+
+    .history-actions {
+    display: flex;
+    gap: 8px;
+}
+
+/* Nuevo estilo para el botón de eliminar */
+.btn-eliminar-historial {
+    color: #ff4444;
+    background: none;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-eliminar-historial:hover {
+    color: #cc0000;
+    transform: scale(1.1);
+}
+      .history-item span {
+          font-family: 'Courier New', monospace;
+          color: #444;
       }
-      .history-item:last-child {
-        border-bottom: none;
+
+      .history-item button {
+          margin-left: auto;
+          display: flex;
+          align-items: center;
+          gap: 5px;
       }
       /* DOCUMENTO GENERADO (Páginas) */
       #documento {
@@ -91,8 +123,6 @@
     </style>
   </head>
   <body>
-
-
     <style>
       /* Reset Moderno */
       *, *::before, *::after {
@@ -599,6 +629,41 @@
     #btnDescargarShared:active {
         transform: scale(0.92);
     }
+    /* Estilos para fechas dinámicas */
+.fecha-group {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 10px;
+  align-items: center;
+}
+
+.fecha-input {
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  width: 200px;
+}
+
+.btn-agregar {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #0a0652;
+  font-size: 1.2em;
+  transition: transform 0.3s;
+}
+
+.btn-agregar:hover {
+  transform: scale(1.1);
+}
+
+.btn-eliminar {
+  color: #ff0000;
+}
+.fecha-input:invalid {
+  border-color: #ff0000;
+  box-shadow: 0 0 3px rgba(255,0,0,0.3);
+}
 </style>
     <!-- MAIN: Generador y Documentos (Se muestra luego del login) -->
     <div class="main-container" id="mainContainer">
@@ -613,6 +678,9 @@
         <button class="btn" id="btnProcesar">PROCESAR</button><p id="procesoMensaje" class="hidden">
           <span class="loader" style="color:#19066e"></span>Procesando.....
         </p>
+        <button class="btn" id="btnHistorial">
+          <i data-lucide="history"  style="color: #e0dd03;"></i>
+        </button>
         <div class="form-group">
           <label for="inputMscName">Msc. XX (Docente..)</label>
           <input
@@ -661,18 +729,21 @@
             value=""
           />
         </div>
-        
-        
-      
-        <!-- Página 3: 10 Fechas de entrega -->
+
         <div class="form-group">
-          <h2>Fechas Entrega</h2>
-          <div id="fechasContainer"></div>
+          <label>Fechas de Entrega</label>
+          <div id="fechasContainer">
+            <!-- Input inicial -->
+            <div class="fecha-group">
+              <input type="date" class="fecha-input">
+              <button type="button" class="btn-agregar">
+                <i class="fas fa-plus-circle"></i>
+              </button>
+            </div>
+          </div>
         </div>
 
       <!-- Asegúrate de incluir FontAwesome o usa un ícono que prefieras -->
-      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-
       <style>
         /* Contenedor para la animación */
         #procesoMensaje {
@@ -734,74 +805,73 @@
         </button>
       </div>
       <!-- Formulario flotante para correo -->
-<div id="emailForm" class="hidden" style="
-position: absolute;
-background: white;
-padding: 15px;
-border-radius: 8px;
-box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-z-index: 1000;
-margin-top: 10px;
-">
-<input 
-    type="email" 
-    id="emailInput" 
-    placeholder="Correo del destinatario"
-    style="
-        padding: 8px;
-        border: 1px solid #ddd;
-        border-radius: 4px;
-        margin-bottom: 8px;
-        width: 100%;
-">
-<div style="display: flex; gap: 8px;">
-    <button 
-        type="button"
-        onclick="enviarCorreo()"
-        style="
-            padding: 8px 15px;
-            background: #0a0652;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-    ">
-        Enviar
-    </button>
-    <button 
-        type="button" 
-        onclick="document.getElementById('emailForm').classList.add('hidden')"
-        style="
-            padding: 8px 15px;
-            background: #666;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-    ">
-        Cancelar
-    </button>
-</div>
-</div>
+      <div id="emailForm" class="hidden" style="
+      position: absolute;
+      background: white;
+      padding: 15px;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      z-index: 1000;
+      margin-top: 10px;
+      ">
+      <input 
+          type="email" 
+          id="emailInput" 
+          placeholder="Correo del destinatario"
+          style="
+              padding: 8px;
+              border: 1px solid #ddd;
+              border-radius: 4px;
+              margin-bottom: 8px;
+              width: 100%;
+      ">
+      <div style="display: flex; gap: 8px;">
+          <button 
+              type="button"
+              onclick="enviarCorreo()"
+              style="
+                  padding: 8px 15px;
+                  background: #0a0652;
+                  color: white;
+                  border: none;
+                  border-radius: 4px;
+                  cursor: pointer;
+          ">
+              Enviar
+          </button>
+          <button 
+              type="button" 
+              onclick="document.getElementById('emailForm').classList.add('hidden')"
+              style="
+                  padding: 8px 15px;
+                  background: #666;
+                  color: white;
+                  border: none;
+                  border-radius: 4px;
+                  cursor: pointer;
+          ">Cancelar
+          </button>
+      </div>
+      </div>
         <!-- HISTORIAL DE DOCUMENTOS -->
-      <div class="history-container hidden" id="historyContainer">
-          <h2>Historial de Documentos Generados</h2>
+        <div class="history-container hidden" id="historyContainer">
+        <h2>Historial de Documentos Generados</h2>
           <div id="historyList"></div>
           <button class="btn" id="btnCerrarHistorial">Cerrar Historial</button>
       </div>
       <style>
           .page {
-        position: relative;
-        width: 210mm; /* A4 */
-        min-height: 297mm; /* A4 */
-        margin: 20px auto;
-        background: #fff;
-        box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
-        overflow: hidden;
-        page-break-after: always;
-        padding: 0;
-        border: 1px solid black; /* Borde delgado de color negro */
-        } 
+          position: relative;
+          width: 215mm; /* A4 */
+          min-height: 297mm; /* A4 */
+          margin: 10px auto;
+          background: #fff;
+          box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+          overflow: hidden;
+          page-break-after: always;
+          padding: 0;
+          border: 1px solid #071e3b; /* Borde delgado de color negro */
+          } 
 
           /* Página 1 con barra izquierda */
           .page1 .left-column {
@@ -898,34 +968,34 @@ margin-top: 10px;
             margin-top: 10px;
           }
           @media print {
-    /* RESTAURAR BORDES DE TABLAS */
-    table {
-        border: 1px solid #000 !important;
-        border-collapse: collapse !important;
-        width: 100% !important;
-    }
-    
-    th, td {
-        border: 1px solid #000 !important;
-        padding: 8px !important;
-        text-align: left !important;
-    }
-    
-    /* AJUSTES FINALES DE DISEÑO */
-    .page {
-        margin: 0 auto !important;
-        border: none !important;
-    }
-    
-    @page {
-        margin: 1cm;
-    }
-    
-    /* OCULTAR BOTÓN EN PDF */
-    #btnDescargarShared {
-        display: none !important;
-    }
-}
+            /* RESTAURAR BORDES DE TABLAS */
+            table {
+                border: 1px solid #000 !important;
+                border-collapse: collapse !important;
+                width: 100% !important;
+            }
+            
+            th, td {
+                border: 1px solid #000 !important;
+                padding: 8px !important;
+                text-align: left !important;
+            }
+            
+            /* AJUSTES FINALES DE DISEÑO */
+            .page {
+                margin: 1px auto !important;
+                border: none !important;
+            }
+            
+            @page {
+                margin: none;
+            }
+            
+            /* OCULTAR BOTÓN EN PDF */
+            #btnDescargarShared {
+                display: none !important;
+            }
+        }
       </style>
 
         <!--DOCUMENTO GENERADO-->
@@ -1031,12 +1101,13 @@ margin-top: 10px;
             </h3>
             <table border="1" cellspacing="0" cellpadding="5" style="width: 100%; border-collapse: collapse; text-align: center; font-family: Arial, sans-serif;">
               <thead style="background-color: #1f3a68; color: white;">
-                <tr>
-                  <th>MÓDULO</th>
-                  <th>CONTENIDO MÍNIMO SUGERIDO</th>
-                  <th>FECHAS DE<br>CLASES VIRTUALES</th>
+                <tr style="font-style: italic;">
+                  <th style="padding: 5px; text-align: center; vertical-align: middle;">MÓDULO</th>
+                  <th style="padding: 5px; text-align: center; vertical-align: middle;">CONTENIDO MÍNIMO SUGERIDO</th>
+                  <th style="padding: 5px; text-align: center; vertical-align: middle;">FECHAS DE<br>CLASES VIRTUALES</th>
                 </tr>
               </thead>
+              
               <tbody>
                 <tr>
                   <td style="vertical-align: top; padding: 15px;">
@@ -1075,11 +1146,11 @@ margin-top: 10px;
               DEBIDAMENTE LLENADO Y FIRMADO A COORDINACIÓN ACADÉMICA</strong>
             </p>
             <p>
-              LINK DE DESCARGA.<br />
+              Link de descarga.<br /><br>
               <a
                 href="https://drive.google.com/drive/folders/1PQ8TY-lfSIL87QQ_SWjmwGUiRFPj_NZ0?usp=sharing"
                 target="_blank">
-                https://drive.google.com/drive/folders/1PQ8TY-lfSIL87QQ_SWjmwGUiRFPj_NZ0?usp=sharing
+                🔗 Descargar Material
               </a>
             </p><br><br>
             <p><strong>OBJETIVO:</strong></p>
@@ -1101,11 +1172,13 @@ margin-top: 10px;
           <div class="full-content page3-content">
             <h3>ACTIVIDADES DE LAS SEMANAS DE AVANCE</h3>
             <table>
-              <tr>
-                <th>ACTIVIDADES</th>
-                <th>DESCRIPCIÓN DE LA ACTIVIDAD</th>
-                <th>FECHA DE ENTREGA</th>
+              <tr style="background-color: #1f3a68; color: white; font-style: italic;">
+                <th style="padding: 5px; text-align: center; vertical-align: middle;">ACTIVIDADES</th>
+                <th style="padding: 5px; text-align: center; vertical-align: middle;">DESCRIPCIÓN DE LA ACTIVIDAD</th>
+                <th style="padding: 5px; text-align: center; vertical-align: middle;">FECHA DE ENTREGA</th>
               </tr>
+              
+              
               <tr>
                 <td>PRÁCTICO I
                   20 puntos actividad práctica o cuestionario
@@ -1176,12 +1249,16 @@ margin-top: 10px;
                   </td>
                 <td><span id="fechaEntrega9" class="data-field"></span></td>
               </tr>
-            </table><br>
+            </table>
             <p style="text-align: justify">
               Las tareas deben tener un plazo mínimo de 7 a 9 días y para dar el tiempo suficiente a cada participante de realizar la misma y poder reforzar lo aprendido viendo los videos de las grabaciones, de esta manera el área académica puede realizar el seguimiento correspondiente a los participantes.
               Usted como docente debe informar mediante el grupo de WhatsApp al momento en el que habilita una actividad en la plataforma, las actividades deben tener como hora de finalización las 23:59pm.
               Las calificaciones se deben registrar por su persona en nuestra Plataforma Virtual, de forma obligatoria, debiendo, además, enviar la planilla de notas firmada por su persona; en un plazo hasta 7 días luego de culminadas las sesiones sincrónicas y la última fecha de presentación de actividades.
-            </p><br><br><br>
+            </p>
+          </div>
+        </div>
+        <div class="page page4">
+          <div class="full-content page4-content">
             <p style="text-align: justify;">
               <strong>PARA LAS CLASES DE ZOOM:</strong><br>
               Debe ingresar 5 minutos antes. El fondo de Zoom (facilitado por coordinación académica) puede descargarse desde el siguiente enlace:<br>
@@ -1197,7 +1274,6 @@ margin-top: 10px;
               Es fundamental que la grabación se mantenga en curso sin interrupciones, es importante contar con el respaldo de la grabación como medida de seguridad y para garantizar la integridad del proceso formativo. y poder mantener como respaldo para aquellos alumnos que, por factores externos, no puedan acceder a la sesión en tiempo real. Esta medida asegura la continuidad del aprendizaje y permite a los estudiantes revisar el contenido.
               </strong>
           </p>
-
             <p style="text-align: justify">
             <p style="text-align: justify">
               <strong>EN CUANTO A HONORARIOS</strong> se cancelará el monto por el módulo completo 1.775 Bs.- (MONTO FACTURADO)
@@ -1243,7 +1319,11 @@ margin-top: 10px;
               <li><strong>Resultados de la Ejecución del Módulo</strong></li>
               <li><strong>Planilla de Notas Incluido Recuperatorio, Firmado a Pie de Página por Usted como Respaldo de la Misma. (Previamente las Notas Subidas a la Plataforma)</strong></li>
           </ol>
-            <br><br><br><br><br><br><br><br><br><br>
+            <br>
+          </div>
+        </div>
+        <div class="page page4">
+          <div class="full-content page4-content">
           <p style="text-align: justify;">
             <strong>NOTA.</strong>- La empresa no es partidaria de temas políticos, por ende, se prohíbe al plantel docente mencionar estos elementos dentro del proceso formativo.
         </p>
@@ -1261,15 +1341,13 @@ margin-top: 10px;
               <p style="text-align: justify;">
                 Esperando contar nuevamente con su presencia en futuros y próximos programas.
              </p>
-              
-            
+
              <div style="text-align: center; width: 100%; margin-top: 50px; position: relative;">
 
               <!-- Contenedor para la imagen centrada -->
               <div style="text-align: center;">
                 <!-- Firma (Imagen de la firma) centrada -->
                 <img src="https://i.ibb.co/xtXh5YD2/firma.png" alt="firma" style="width: 120px; margin-bottom: 1%;">
-
                 <!-- Información centrada -->
                 <p style="margin: 0; font-size: 14px; line-height: 1.8; text-align: center;">
                     <strong><em>Ing. Andrea Lucía Aramayo Martínez</em></strong><br />
@@ -1278,8 +1356,6 @@ margin-top: 10px;
                    <em>Cel: 73360695</em>
                 </p>
               </div>
-
-            
               <!-- Sello flotante a la derecha de la firma -->
               <img src="https://i.ibb.co/j2B0MBm/cello-final.png" alt="cello" style="position: absolute; top: 0; right: 0; width: 152px;">
             </div>
@@ -1309,23 +1385,6 @@ margin-top: 10px;
     emailForm.classList.remove('hidden');
     document.getElementById('emailInput').focus();
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 // funcion del correco electrnico
@@ -1473,28 +1532,52 @@ function enviarCorreo() {
     }
 })();
       // Generar 10 campos para fechas de entrega en el formulario
-  const fechasContainer = document.getElementById("fechasContainer");
-  for (let i = 0; i < 10; i++) {
-    // Crear etiqueta
-    const label = document.createElement("label");
-    label.textContent = `Fecha de entrega ${i + 1}:`;
-    label.setAttribute('for', `inputFechaEntrega${i}`);
+  // ===== [SOLO 1 FECHA INICIAL + BOTÓN PARA AGREGAR MÁS] ===== //
+const fechasContainer = document.getElementById("fechasContainer");
 
-    // Crear input tipo date
-    const input = document.createElement("input");
-    input.type = "date";
-    input.id = `inputFechaEntrega${i}`;
-    input.name = `inputFechaEntrega${i}`;
-    input.classList.add("form-control", "mb-2");
+// Crear primer grupo de fecha
+const primerGrupo = document.createElement("div");
+primerGrupo.className = "fecha-group";
 
-    // Establecer la fecha actual por defecto
-    const hoy = new Date().toISOString().split('T')[0];
-    input.value = hoy;
+// En la creación del primer grupo, quita el value
+primerGrupo.innerHTML = `
+  <input type="date" class="fecha-input">
+  <button type="button" class="btn-agregar">
+    <i class="fas fa-plus-circle"></i>
+  </button>
+`;
 
-    // Añadir al contenedor
-    fechasContainer.appendChild(label);
-    fechasContainer.appendChild(input);
+fechasContainer.appendChild(primerGrupo);
+
+// Manejar clics en los botones
+fechasContainer.addEventListener("click", (e) => {
+  const target = e.target;
+  
+  // Agregar nueva fecha
+  if (target.closest('.btn-agregar')) {
+    if (document.querySelectorAll('.fecha-group').length < 10) {
+      const nuevoGrupo = document.createElement("div");
+      nuevoGrupo.className = "fecha-group";
+      
+      nuevoGrupo.innerHTML = `
+        <input type="date" class="fecha-input">
+        <button type="button" class="btn-eliminar">
+          <i class="fas fa-minus-circle"></i>
+        </button>
+      `;
+      
+      fechasContainer.appendChild(nuevoGrupo);
+    }
   }
+  
+  // Eliminar fecha (excepto la primera)
+  if (target.closest('.btn-eliminar')) {
+    const grupo = target.closest('.fecha-group');
+    if (document.querySelectorAll('.fecha-group').length > 1) {
+      grupo.remove();
+    }
+  }
+});
 
       // LOGIN
       btnLogin.addEventListener("click", () => {
@@ -1546,73 +1629,61 @@ function enviarCorreo() {
 
       // Al hacer click en "PROCESAR" (5 segundos)
       btnProcesar.addEventListener("click", () => {
-        if (
-          !inputMscName.value ||
-          !inputDiplomado.value ||
-          !inputModulo.value
-        ) {
-          alert("Por favor, llena los campos obligatorios.");
-          return;
-        }
-        procesoMensaje.classList.remove("hidden");
-        btnProcesar.disabled = true;
+    if (!inputMscName.value || !inputDiplomado.value || !inputModulo.value) {
+        alert("Por favor, llena los campos obligatorios.");
+        return;
+    }
+    
+    procesoMensaje.classList.remove("hidden");
+    btnProcesar.disabled = true;
 
-        setTimeout(() => {
-          mscNameOutput.textContent = inputMscName.value || "MSC. XX";
-          diplomadoOutput.textContent =
-            inputDiplomado.value || "DIPLOMADO EN XX";
-          diplomadoOutput2.textContent =
-            inputDiplomado.value || "DIPLOMADO EN XX";
-          moduloOutput.textContent = inputModulo.value || "MÓDULO EJEMPLO";
-          numeroModuloOutput.textContent = inputNumeroModulo.value || "I";
-          contenidoOutput.textContent =
-            inputContenido.value || "CONTENIDO MÍNIMO SUGERIDO";
-          fechasOutput.textContent =
-            inputFechas.value || "Fecha de claces";
+    setTimeout(() => {
+        // 1. Actualizar campos del documento
+        mscNameOutput.textContent = inputMscName.value || "MSC. XX";
+        diplomadoOutput.textContent = inputDiplomado.value || "DIPLOMADO EN XX";
+        diplomadoOutput2.textContent = inputDiplomado.value || "DIPLOMADO EN XX";
+        moduloOutput.textContent = inputModulo.value || "MÓDULO EJEMPLO";
+        numeroModuloOutput.textContent = inputNumeroModulo.value || "I";
+        contenidoOutput.textContent = inputContenido.value || "CONTENIDO MÍNIMO SUGERIDO";
+        fechasOutput.textContent = inputFechas.value || "Fecha de clases";
 
-          document.getElementById("fechaActual").textContent =
-            getFormattedDate();
+        document.getElementById("fechaActual").textContent = getFormattedDate();
 
-          let fechaParams = "";
-          for (let i = 0; i < 10; i++) {
-            const fechaInput = document.getElementById(`inputFechaEntrega${i}`);
-            const fechaOutput = document.getElementById(`fechaEntrega${i}`);
-            let valor = fechaInput.value || "";
+        // 2. Construir parámetros de fechas CORREGIDO
+        let fechaParams = "";
+        document.querySelectorAll('.fecha-input').forEach((input, index) => {
+            const valor = input.value || "";
+            // CORRECCIÓN: Paréntesis bien cerrado en encodeURIComponent
+            fechaParams += `&fecha${index}=${encodeURIComponent(valor)}`; 
+            
+            const fechaOutput = document.getElementById(`fechaEntrega${index}`);
             if (fechaOutput) {
-              fechaOutput.textContent = valor;
+                fechaOutput.textContent = valor || "";
             }
-            fechaParams += `&fecha${i}=` + encodeURIComponent(valor);
-          }
+        });
 
-          const baseUrl = window.location.origin + window.location.pathname;
-          const urlCompartir = `${baseUrl}?view=doc&msc=${encodeURIComponent(
-            inputMscName.value
-          )}&dip=${encodeURIComponent(
-            inputDiplomado.value
-          )}&mod=${encodeURIComponent(
-            inputModulo.value
-          )}&num=${encodeURIComponent(
-            inputNumeroModulo.value
-          )}&cont=${encodeURIComponent(
-            inputContenido.value
-          )}&fchas=${encodeURIComponent(inputFechas.value)}${fechaParams}`;
-          btnCompartir.setAttribute("data-url", urlCompartir);
+        // 3. Construir URL compartida
+        const baseUrl = window.location.origin + window.location.pathname;
+        const urlCompartir = `${baseUrl}?view=doc&msc=${encodeURIComponent(inputMscName.value)}&dip=${encodeURIComponent(inputDiplomado.value)}&mod=${encodeURIComponent(inputModulo.value)}&num=${encodeURIComponent(inputNumeroModulo.value)}&cont=${encodeURIComponent(inputContenido.value)}&fchas=${encodeURIComponent(inputFechas.value)}${fechaParams}`;
+        
+        btnCompartir.setAttribute("data-url", urlCompartir);
 
-          // Guardar en historial en localStorage
-          const docEntry = {
+        // 4. Guardar en historial
+        const docEntry = {
             timestamp: new Date().toISOString(),
-            url: urlCompartir,
-          };
-          let history = JSON.parse(localStorage.getItem("docHistory")) || [];
-          history.push(docEntry);
-          localStorage.setItem("docHistory", JSON.stringify(history));
+            url: urlCompartir
+        };
+        let history = JSON.parse(localStorage.getItem("docHistory")) || [];
+        history.push(docEntry);
+        localStorage.setItem("docHistory", JSON.stringify(history));
 
-          formulario.classList.add("hidden");
-          procesoMensaje.classList.add("hidden");
-          documento.style.display = "block";
-          botonesAcciones.classList.remove("hidden");
-        }, 5000);
-      });
+        // 5. Mostrar resultados
+        formulario.classList.add("hidden");
+        procesoMensaje.classList.add("hidden");
+        documento.style.display = "block";
+        botonesAcciones.classList.remove("hidden");
+    }, 5000);
+});
 
       // Botón Ver / Ocultar Documento
       let visible = true;
@@ -1641,25 +1712,66 @@ function enviarCorreo() {
 
       // Botón Historial: muestra el historial de documentos generados
       btnHistorial.addEventListener("click", () => {
-        const history = JSON.parse(localStorage.getItem("docHistory")) || [];
-        historyList.innerHTML = "";
-        if (history.length === 0) {
-          historyList.innerHTML = "<p>No hay documentos generados.</p>";
-        } else {
-          history.reverse().forEach((doc, index) => {
+    const history = JSON.parse(localStorage.getItem("docHistory")) || [];
+    historyList.innerHTML = "";
+    
+    const formatDate = (date) => {
+        const day = date.getDate().toString().padStart(2, '0');
+        const month = (date.getMonth() + 1).toString().padStart(2, '0');
+        const year = date.getFullYear();
+        const hours = date.getHours().toString().padStart(2, '0');
+        const minutes = date.getMinutes().toString().padStart(2, '0');
+        return `${day}/${month}/${year} ${hours}:${minutes}`;
+    };
+
+    if (history.length === 0) {
+        historyList.innerHTML = "<p>No hay documentos generados.</p>";
+    } else {
+        history.reverse().forEach((doc, index) => {
             const item = document.createElement("div");
             item.classList.add("history-item");
             const date = new Date(doc.timestamp);
-            item.innerHTML = `<span>${date.toLocaleString()}</span>
-          <button class="btn" onclick="verDocumentoHist('${
-            doc.url
-          }')">VER</button>`;
+            
+            item.innerHTML = `
+                <span>${formatDate(date)}</span>
+                <div class="history-actions">
+                    <button class="btn" onclick="verDocumentoHist('${doc.url}')">
+                        <i class="fas fa-eye" style="color: #ff7301;"></i>
+                    </button>
+                    <button class="btn-eliminar-historial" onclick="eliminarDelHistorial(${history.length - 1 - index})">
+                        <i class="fas fa-trash-alt"></i>
+                    </button>
+                </div>
+            `;
+            
             historyList.appendChild(item);
-          });
+        });
+    }
+    historyContainer.classList.remove("hidden");
+});
+function eliminarDelHistorial(index) {
+    let history = JSON.parse(localStorage.getItem("docHistory")) || [];
+    
+    // Ajustar el índice porque el historial está invertido
+    const adjustedIndex = history.length - 1 - index;
+    
+    if (adjustedIndex >= 0 && adjustedIndex < history.length) {
+        history.splice(adjustedIndex, 1);
+        localStorage.setItem("docHistory", JSON.stringify(history));
+        
+        // Volver a cargar el historial
+        btnHistorial.click();
+        
+        // Mostrar feedback visual
+        const historyItems = document.querySelectorAll('.history-item');
+        if (historyItems[adjustedIndex]) {
+            historyItems[adjustedIndex].classList.add('deleting');
+            setTimeout(() => {
+                historyItems[adjustedIndex].remove();
+            }, 300);
         }
-        historyContainer.classList.remove("hidden");
-      });
-
+    }
+}
       // Función para ver documento del historial
       function verDocumentoHist(url) {
         window.location.href = url;
