@@ -5,7 +5,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <title>Esam Sucre Sucursal</title>
     <style>
-      /* RESETEO BÁSICO */
       * {
         margin: 0;
         padding: 0;
@@ -70,7 +69,7 @@
         align-items: center;
         padding: 10px;
         margin: 5px 0;
-        background: white;
+        /* background: white; */
         border-radius: 6px;
         transition: all 0.2s ease;
     }
@@ -82,31 +81,31 @@
 
     .history-date {
         font-family: 'Courier New', monospace;
-        color: #666;
+        color: #015f4f;
         font-size: 0.9em;
     }
 
     .history-actions {
     display: flex;
     gap: 8px;
-}
+    }
 
-/* Nuevo estilo para el botón de eliminar */
-.btn-eliminar-historial {
-    color: #ff4444;
-    background: none;
-    border: none;
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
+    /* Nuevo estilo para el botón de eliminar */
+    .btn-eliminar-historial {
+        color: #ff4444;
+        background: none;
+        border: none;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
 
-.btn-eliminar-historial:hover {
-    color: #cc0000;
-    transform: scale(1.1);
-}
+    .btn-eliminar-historial:hover {
+        color: #cc0000;
+        transform: scale(1.1);
+    }
       .history-item span {
           font-family: 'Courier New', monospace;
-          color: #444;
+          color: #005c91;
       }
 
       .history-item button {
@@ -159,12 +158,12 @@
       .login-form {
           flex: 1;
           padding: 6rem;
-          min-width: 400px;
+          min-width: 300px;
       }
       
       .login-image {
           flex: 1;
-          background: linear-gradient(45deg, #4f46e5, #6366f1);
+          background: linear-gradient(45deg, #0a02a8, #000002);
           position: relative;
           overflow: hidden;
       }
@@ -183,29 +182,30 @@
           left: 0;
           width: 100%;
           height: 100%;
-          background: linear-gradient(45deg, rgba(79, 70, 229, 0.9), rgba(99, 102, 241, 0.2));
+          background: linear-gradient(45deg, rgba(7, 0, 143, 0.9), rgba(0, 0, 0, 0.5));
       }
       
       .image-content {
           position: absolute;
-          bottom: 2rem;
-          left: 2rem;
-          z-index: 1;
-          color: white;
+          bottom: 1rem;
+          left: 1rem;
+          z-index: 6;
+          color: rgb(250, 246, 6);
       }
       
       .image-content h2 {
-          font-size: 1.75rem;
-          margin-bottom: 0.5rem;
+          font-size: 1.60rem;
+          margin-bottom: 0.2rem;
       }
       
       .image-content p {
-          font-size: 0.9rem;
+          font-size: 0.6rem;
           opacity: 0.9;
       }
       
       .login-container h1 {
-          color: #1e293b;
+          color: #000000;
+          font-style: italic;
           font-size: 1.75rem;
           font-weight: 600;
           margin-bottom: 2.5rem;
@@ -222,14 +222,12 @@
           transition: all 0.2s ease;
           /* background: #4c6d85; */
       }
-      
       .login-container input:focus {
           outline: none;
           border-color: #4f46e5;
           box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
           background: white;
       }
-      
       .btn {
           /* width: 100%; */
           padding: 0.875rem;
@@ -242,9 +240,8 @@
           cursor: pointer;
           transition: all 0.2s ease;
       }
-      
       .btn:hover {
-          background: #040122;
+          background: #000000;
           transform: translateY(-1px);
       }
       
@@ -277,18 +274,45 @@
       <div class="login-container" id="loginContainer">
           <!-- Formulario de login -->
           <div class="login-form">
+            <div style="display: flex; align-items: center; gap: 2px;">
+              <i class="fas fa-user-check" id="rememberIcon" style="color: #0609be; cursor: pointer;"></i>
+              <span id="rememberMessage" style="font-size: 10px; color: #0609be; font-style: italic;">No recordado</span>
+           </div>
             <h1>Iniciar Sesión</h1>
             <input type="text" id="username" placeholder="Usuario" />
-            <input type="password" id="password" placeholder="Contraseña" />
+            <input type="password" id="password" placeholder="Contraseña"/>
             <span onclick="togglePassword()">
-                <i class="fas fa-eye"></i> <!-- Icono de ojo de Font Awesome -->
-            </span>
+              <i class="fas fa-eye" style="color:#0609be;"></i>
+          </span>            
             <button class="btn" id="btnLogin">Ingresar</button>
-            <!-- Mensaje de error (si se desea, se puede mantener o eliminar) -->
-            <p id="error-message" style="color: red; display: none; margin-top: 10px;"></p>
         </div>
+        <script>
+            document.addEventListener("DOMContentLoaded", function() {
+                let user = document.getElementById("username"),
+                    pass = document.getElementById("password"),
+                    icon = document.getElementById("rememberIcon"),
+                    message = document.getElementById("rememberMessage"),
+                    saved = localStorage.getItem("rememberUser");
+        
+                if (saved) {
+                    user.value = saved;
+                    pass.value = localStorage.getItem("rememberPass") || "";
+                    message.textContent = "Recordado";
+                }
+        
+                icon.onclick = () => {
+                    if (localStorage.getItem("rememberUser")) {
+                        localStorage.clear();
+                        message.textContent = "No recordado";
+                    } else if (user.value.trim() && pass.value.trim()) {
+                        localStorage.setItem("rememberUser", user.value);
+                        localStorage.setItem("rememberPass", pass.value);
+                        message.textContent = "Recordado";
+                    }
+                };
+            });
+        </script>
           <!-- Formulario de login -->
-
           <script>
             function togglePassword() {
                 const passwordInput = document.getElementById("password");
@@ -342,8 +366,6 @@
                 }
             });
         </script>
-        
-          
           <!-- Sección de Imagen -->
           <div class="login-image">
               <img src="https://images.unsplash.com/photo-1553877522-43269d4ea984?auto=format&fit=crop&w=1200&q=80" alt="Modern workspace">
@@ -353,13 +375,11 @@
               </div>
           </div>
       </div>
-
-
     <style>
       :root {
-      --primary-color: #1d0555;
-      --secondary-color: #010233;
-      --text-color: #2c3e50;
+      --primary-color: #0609be;
+      --secondary-color: #0609be;
+      --text-color: #01023b;
       --bg-color: #f8f9fa;
       --transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     }
@@ -404,14 +424,14 @@
 
     /* Elementos de Formulario Mejorados */
     input, textarea {
-      width: 70%;
-      padding: 0.8rem;
-      border: 2px solid #e0e0e0;
-      border-radius: 8px;
-      font-size: 0.95rem;
-      transition: var(--transition);
-      background: rgba(255,255,255,0.95);
-    }
+    width: 40%;
+    padding: 0.4rem;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 0.55rem;
+    transition: var(--transition);
+    background: rgba(255, 255, 255, 0.95);
+  }
 
     input:focus, textarea:focus {
       border-color: var(--primary-color);
@@ -427,11 +447,11 @@
     /* Botón Inteligente con Animación */
     .btn {
       background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-      color: white;
+      color: #cbc832;
       padding: 0.8rem 2rem;
       border: none;
-      border-radius: 8px;
-      font-size: 1rem;
+      border-radius: 0px 30px 1px;
+      font-size: 0.7rem;
       cursor: pointer;
       transition: var(--transition);
       grid-column: 1 / -1;
@@ -440,7 +460,6 @@
       position: relative;
       overflow: hidden;
     }
-
     .btn::after {
       content: '';
       position: absolute;
@@ -452,16 +471,13 @@
       transform: rotate(45deg);
       transition: var(--transition);
     }
-
     .btn:hover::after {
       left: 50%;
       top: 50%;
     }
-
     .btn:active {
       transform: scale(0.98);
     }
-
     /* Sección de Fechas Dinámica */
     #fechasContainer {
       display: grid;
@@ -469,7 +485,6 @@
       gap: 1rem;
       margin-top: 1.2rem;
     }
-
     /* Loader Moderno */
     .loader {
       width: 22px;
@@ -479,27 +494,22 @@
       border-radius: 50%;
       animation: spin 0.8s linear infinite;
     }
-
     @keyframes spin {
       0% { transform: rotate(0deg); }
       100% { transform: rotate(360deg); }
     }
-
     /* Mensaje de Proceso */
     #procesoMensaje {
       text-align: center;
       padding: 1rem;
-      background: rgba(52,152,219,0.05);
       border-radius: 8px;
       margin-top: 1.5rem;
       animation: fadeIn 0.4s ease;
     }
-
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(10px); }
       to { opacity: 1; transform: translateY(0); }
     }
-
     /* Responsive Design Avanzado */
     @media (max-width: 768px) {
       .form-container {
@@ -515,13 +525,11 @@
         font-size: 0.9rem;
         padding: 0.7rem;
       }
-      
       .btn {
         /* width: 100%; */
         padding: 0.8rem;
       }
     }
-
     @media (max-width: 480px) {
       .main-container {
         padding: 0.5rem;
@@ -536,20 +544,17 @@
         grid-template-columns: 1fr;
       }
     }
-
     /* Animaciones Adicionales */
     @keyframes float {
       0%, 100% { transform: translateY(0); }
       50% { transform: translateY(-5px); }
     }
-
     input:hover {
       animation: float 3s ease-in-out infinite;
     }
-
     /* Mejoras de Accesibilidad */
     label {
-      font-size: 0.9rem;
+      font-size: 0.5rem;
       color: var(--text-color);
       margin-bottom: 0.5rem;
       font-weight: 500;
@@ -557,7 +562,6 @@
       font-style: italic;
       transition: color 0.2s ease;
     }
-
     .form-group:focus-within label {
       color: var(--primary-color);
     }
@@ -567,7 +571,6 @@
         border: 1px solid #000 !important;
         border-collapse: collapse !important;
     }
-    
     /* Ajustar márgenes para impresión */
     @page {
         margin: 0cm;
@@ -673,14 +676,15 @@
         <p>
           Completa los campos y presiona <strong>PROCESAR</strong>. Luego se
           generara la carta.
-        </p><br>
+        </p>
+        <button class="btn" id="btnHistorial">
+          <i data-lucide="history"  style="color: #e0dd03;">Ver historial</i>
+        </button><br>
           <!-- Botón PROCESAR -->
         <button class="btn" id="btnProcesar">PROCESAR</button><p id="procesoMensaje" class="hidden">
           <span class="loader" style="color:#19066e"></span>Procesando.....
         </p>
-        <button class="btn" id="btnHistorial">
-          <i data-lucide="history"  style="color: #e0dd03;"></i>
-        </button>
+        
         <div class="form-group">
           <label for="inputMscName">Msc. XX (Docente..)</label>
           <input
@@ -725,11 +729,10 @@
           <input
             id="inputFechas"
             class="form-control"
+            type="date"
             placeholder="Opcional..."
-            value=""
           />
         </div>
-
         <div class="form-group">
           <label>Fechas de Entrega</label>
           <div id="fechasContainer">
@@ -742,7 +745,6 @@
             </div>
           </div>
         </div>
-
       <!-- Asegúrate de incluir FontAwesome o usa un ícono que prefieras -->
       <style>
         /* Contenedor para la animación */
@@ -750,8 +752,8 @@
           display: flex;
           align-items: center;
           font-family: Arial, sans-serif;
-          font-size: 18px;
-          color: #333;
+          font-size: 10px;
+          color: #0c0c0c;
         }
 
         /* Espacio entre el icono y el texto */
@@ -774,13 +776,11 @@
             transform: rotate(360deg);
           }
         }
-
         /* Efecto de desvanecimiento para la transición */
         .hidden {
           opacity: 0;
           transition: opacity 0.3s ease-in-out;
         }
-
         .visible {
           opacity: 1;
         }
@@ -792,10 +792,10 @@
           <i data-lucide="eye"  style="color: #ff7301;"></i> 
         </button>
         <button class="btn" id="btnDescargar">
-          <i data-lucide="download"  style="color: #0609be;"></i> 
+          <i data-lucide="download"  style="color: #000000;"></i> 
         </button>
         <button class="btn" id="btnCompartir">
-          <i data-lucide="share-2" style="color: #05976b;"></i>
+          <i data-lucide="share-2" style="color: #ffffff;"></i>
         </button>
         <button class="btn" id="btnHistorial">
           <i data-lucide="history"  style="color: #e0dd03;"></i>
@@ -997,7 +997,6 @@
             }
         }
       </style>
-
         <!--DOCUMENTO GENERADO-->
         <div id="documento">
         <!-- Página 1: Con barra izquierda -->
@@ -1071,7 +1070,6 @@
                   </div>
                 </p>
               </div>
-            
               <!-- Firma Derecha -->
               <div style="text-align: center; width: 45%; margin-top: 30px;"><br><br><br><br>
                 <p style="margin: 0; font-size: 14px; line-height: 1.8;">
@@ -1083,14 +1081,12 @@
                   </div>
                 </p>
               </div>
-            
               <!-- Sello flotante más grande -->
               <img src="https://i.ibb.co/j2B0MBm/cello-final.png" alt="cello-final" 
                    style="position: absolute; top: -50px; left: 50%; transform: translateX(-50%); width: 152px;">
             </div>            
           </div>
         </div>
-
         <!-- Página 2: Sin barra izquierda -->
         <div class="page page2">
           <div class="full-content page2-content">
@@ -1107,7 +1103,6 @@
                   <th style="padding: 5px; text-align: center; vertical-align: middle;">FECHAS DE<br>CLASES VIRTUALES</th>
                 </tr>
               </thead>
-              
               <tbody>
                 <tr>
                   <td style="vertical-align: top; padding: 15px;">
@@ -1139,7 +1134,6 @@
                 </tr>
               </tbody>
             </table><br><br>
-            
             <p><strong>
               ES PRECISO QUE ANTES DEL INICIO DE MÓDULO CARGUE A PLATAFORMA EL
               PLAN ACADÉMICO CURRICULAR MISMO QUE DEBE SER ENVIADO EN PDF
@@ -1440,15 +1434,6 @@ function enviarCorreo() {
     document.getElementById('emailInput').value = '';
 }
 
-
-
-
-
-
-
-
-
-
       // Función para formatear la fecha actual en español
       function getFormattedDate() {
         const date = new Date();
@@ -1578,7 +1563,6 @@ fechasContainer.addEventListener("click", (e) => {
     }
   }
 });
-
       // LOGIN
       btnLogin.addEventListener("click", () => {
         const user = document.getElementById("username").value;
@@ -1633,7 +1617,6 @@ fechasContainer.addEventListener("click", (e) => {
         alert("Por favor, llena los campos obligatorios.");
         return;
     }
-    
     procesoMensaje.classList.remove("hidden");
     btnProcesar.disabled = true;
 
@@ -1784,7 +1767,6 @@ function eliminarDelHistorial(index) {
     </script>
   </body>
 </html>
-
 <script src="https://unpkg.com/lucide@latest"></script>
 <script>
   lucide.createIcons();
